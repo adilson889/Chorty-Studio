@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Chorty Studio Mobile</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; overflow: hidden; background-color: #0f172a; touch-action: manipulation; }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+        textarea:focus { outline: none; }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+        const CSS_MAP = {'exibicao':'display','posicao':'position','largura':'width','altura':'height','margem':'margin','preenchimento':'padding','cor de fundo':'background-color','cor do texto':'color','flexivel':'flex','direcao':'flex-direction','alinhar itens':'align-items','justificar conteudo':'justify-content','grade':'grid','colunas da grade':'grid-template-columns','tamanho da fonte':'font-size','borda':'border','raio da borda':'border-radius','gap':'gap','topo':'top','esquerda':'left','direita':'right','baixo':'bottom'};
+        const CSS_VALS = {'flexivel':'flex','grade':'grid','coluna':'column','linha':'row','centro':'center','absoluta':'absolute','relativa':'relative','fixa':'fixed','negrito':'bold','oculto':'none','azul':'#3b82f6','vermelho':'#ef4444','verde':'#22c55e','branco':'#fff','preto':'#000'};
+        const TERMINAL_CODE = `(function(){var t=document.createElement('div');t.style.cssText='position:fixed;bottom:0;left:0;width:100%;background:#1a1b26;color:#a9b1d6;font-family:monospace;z-index:9999;max-height:150px;overflow:auto;padding:8px;border-top:1px solid #333;font-size:12px;display:flex;flex-direction:column-reverse;';document.body.appendChild(t);function l(y,m){var d=document.createElement('div');d.style.borderBottom='1px solid #333';d.style.padding='2px 0';d.style.color=y==='e'?'#f7768e':'#73daca';d.textContent=(y==='e'?'✖ ':'➜ ')+m;t.insertBefore(d,t.firstChild)}var o=console.log;console.log=function(){var a=Array.from(arguments).map(x=>typeof x==='object'?JSON.stringify(x):String(x)).join(' ');l('l',a);o.apply(console,arguments)};window.onerror=function(m){l('e',m)}})();`;
+        const transpile = (code) => {
+            const lines = code.split('\n');
+            let html='',css='',js='',mode='html',defCss="body{margin:0;font-family:sans-serif;min-height:100vh;}*{box-sizing:border-box;}button{cursor:pointer;}";
+            lines.forEach(line => {
+                const t = line.trim();
+                if(!t || t.startsWith('#')) return;
+                if(t.startsWith('criar estilo')) { mode='css'; css+=t.includes('corpo')?'body{':'div{'; return; }
+                if(t.startsWith('fechar estilo')) { mode='html'; css+='}'; return; }
+                if(t.startsWith('criar comportamento')) { mode='js'; return; }
+                if(t.startsWith('fechar comportamento')) { mode='html'; return; }
+                if(mode==='html') {
+                    if(t.startsWith('criar cabecalho')) html+='<header style="padding:1rem;background:#f8fafc;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #e2e8f0;">';
+                    else if(t.startsWith('fechar cabecal')) html+='</header>';
+                    else if(t.startsWith('criar corpo')) html+='<main style="padding:1.5rem;max-width:800px;margin:0 auto;">';
+                    else if(t.startsWith('fechar corpo')) html+='</main>';
+                    else if(t.startsWith('criar rodape')) html+='<footer style="padding:1rem;text-align:center;background:#f1f5f9;margin-top:auto;border-top:1px solid #e2e8f0;">';
+                    else if(t.startsWith('fechar rodape')) html+='</footer>';
+                    else if(t.startsWith('adicionar titulo')) html+=`<h1 style="font-size:2rem;font-weight:bold;margin-bottom:0.5em;">${t.match(/"([^"]+)"/)?.[1]||''}</h1>`;
+                    else if(t.startsWith('adicionar subtitulo')) html+=`<h2 style="font-size:1.5rem;font-weight:600;margin-bottom:0.5em;">${t.match(/"([^"]+)"/)?.[1]||''}</h2>`;
+                    else if(t.startsWith('adicionar paragrafo')) html+=`<p style="margin-bottom:1em;line-height:1.6;">${t.match(/"([^"]+)"/)?.[1]||''}</p>`;
+                    else if(t.startsWith('adicionar botao')) { const txt=t.match(/"([^"]+)"/)?.[1]||'Btn'; const id=t.match(/com id "([^"]+)"/)?.[1]||''; html+=`<button id="${id}" style="padding:12px 24px;background:#3b82f6;color:white;border:none;border-radius:8px;font-weight:600;">${txt}</button>`; }
+                    else if(t.startsWith('adicionar campo')) { const l=t.match(/"([^"]+)"/)?.[1]||'Lbl'; const id=t.match(/com id "([^"]+)"/)?.[1]||''; html+=`<div style="margin-bottom:10px"><label style="display:block;margin-bottom:5px;font-weight:500">${l}</label><input id="${id}" style="width:100%;padding:10px;border:1px solid #cbd5e1;border-radius:6px;"></div>`; }
+                }
+                if(mode==='css') { const p=t.split(':'); if(p.length===2) css+=`${CSS_MAP[p[0].trim()]||p[0].trim()}:${CSS_VALS[p[1].trim()]||p[1].trim()};`; }
+                if(mode==='js') {
+                    let j=t.replace(/definir (.+) como (.+)/,'let $1=$2;').replace(/funcao (.+)/,'function $1(){').replace('fim funcao','}').replace(/imprimir (.+)/,'console.log($1);').replace(/mostrar alerta (.+)/,'alert($1);').replace(/se (.+) entao/,'if($1){').replace('senao','}else{').replace('fim se','}').replace(/buscar elemento "([^"]+)" adicionar evento "clique" com (.+)/,'setTimeout(()=>document.querySelector("$1")?.addEventListener("click",$2),500);');
+                    if(j.includes(' mais ')) j=j.replace(/ mais /g,' + ');
+                    js+=j+'\n';
+                }
+            });
+            return { full: `<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><style>${defCss}${css}</style></head><body>${html}<script>${TERMINAL_CODE}${js}<\/script></body></html>` };
+        };
+        const Icon = ({name}) => { React.useEffect(()=>{if(window.lucide)window.lucide.createIcons()}); return <i data-lucide={name} style={{width:20,height:20,display:'inline-block'}}></i> };
+        const App = () => {
+            const [code,setCode] = useState('# Edite aqui\ncriar pagina "App"\ncriar corpo\nadicionar titulo "Olá"\nfechar corpo');
+            const [view,setView] = useState('editor');
+            const [res,setRes] = useState('');
+            const run = () => { setRes(transpile(code).full); setView('preview'); };
+            const exp = () => { const z=new JSZip(); z.file("index.html",transpile(code).full); z.generateAsync({type:"blob"}).then(b=>{const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download="app.zip";a.click()}) };
+            const mic = () => { if(!window.webkitSpeechRecognition)return alert('Sem voz'); const r=new window.webkitSpeechRecognition(); r.lang='pt-BR'; r.onresult=e=>setCode(c=>c+'\n# Voz: '+e.results[0][0].transcript); r.start(); };
+            return (
+                <div className="flex flex-col h-screen bg-gray-900 text-white overflow-hidden">
+                    <div className="h-16 border-b border-gray-800 flex items-center justify-between px-4 bg-gray-900 z-10">
+                        <span className="font-bold text-xl text-blue-400">Chorty</span>
+                        <div className="flex gap-2">
+                           {view==='editor'?<><button onClick={mic} className="p-2 bg-gray-800 rounded-full"><Icon name="mic"/></button><button onClick={exp} className="p-2 bg-gray-800 rounded-full"><Icon name="download"/></button><button onClick={run} className="px-4 py-2 bg-green-600 rounded-full font-bold flex gap-2"><Icon name="play"/> Run</button></>:<button onClick={()=>setView('editor')} className="px-4 py-2 bg-gray-700 rounded-full font-bold flex gap-2"><Icon name="arrow-left"/> Voltar</button>}
+                        </div>
+                    </div>
+                    <div className="flex-grow relative">{view==='editor'?<textarea value={code} onChange={e=>setCode(e.target.value)} className="w-full h-full bg-[#0f172a] text-[#e2e8f0] p-4 font-mono text-sm resize-none outline-none"/>:<iframe srcDoc={res} className="w-full h-full border-none bg-white"/>}</div>
+                </div>
+            );
+        };
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
