@@ -120,7 +120,8 @@ ________________________
 
 #Execução Online
 
-Acesse a versão web em: https://chorty.studio
+Acesse a versão web em: 
+https://adilson889.github.io/Chorty-Studio/
 
 Guia de Uso Rápido
 
