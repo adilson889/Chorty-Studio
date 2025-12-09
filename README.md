@@ -1,11 +1,11 @@
 # Chorty-Studio
 CHORTY Studio - README
 
-Visão Geral
+#Visão Geral
 
 CHORTY Studio é uma plataforma de desenvolvimento revolucionária que permite a criação de sites, interfaces, aplicações web utilizando exclusivamente a língua portuguesa. Através de um sistema de transpilação avançado, código escrito em português é automaticamente convertido em HTML, CSS e JavaScript padrão, eliminando a barreira linguística no desenvolvimento web.
 
-Características Principais
+#Características Principais
 
 Transpilação em Português
 
@@ -13,7 +13,7 @@ Transpilação em Português
 · Conversão automática para código padrão compatível com navegadores modernos
 · Suporte a HTML, CSS e JavaScript totalmente em português
 
-Estrutura da Linguagem
+#Estrutura da Linguagem
 
 Configuração de Página
 
@@ -24,7 +24,7 @@ configurar metatags
 criar pagina "Meu Site"
 _______________________
 
-Elementos Estruturais
+#Elementos Estruturais
 
 
 criar cabecalho
@@ -34,7 +34,7 @@ criar corpo
 criar rodape
 
 
-Sistema CSS Natural
+#Sistema CSS Natural
 
 
 criar estilo do corpo
@@ -46,7 +46,7 @@ preenchimento: 2rem
 fechar estilo do corpo
 
 
-Lógica JavaScript em Português
+#Lógica JavaScript em Português
 
 
 criar comportamento
@@ -56,23 +56,29 @@ definir nome como "João"
 definir idade como 25
 
 funcao saudacao com nome
+
     imprimir "Olá " mais nome
+
+    
 fim funcao
 
 se idade e maior ou igual a 18 entao
+
     imprimir "Maior de idade"
+    
 fim se
+
 fechar comportamento
 
 
-Sistema de Componentes
+#Sistema de Componentes
 
 · Formulários: criar formulario, adicionar campo de texto, adicionar campo de email
 · Listas: criar lista, adicionar item
 · Elementos Interativos: adicionar botao, adicionar titulo, adicionar paragrafo
 · Layout: criar grade, exibicao: flexivel, exibicao: grade
 
-Instalação e Configuração
+#Instalação e Configuração
 
 Pré-requisitos
 
@@ -80,7 +86,7 @@ Pré-requisitos
 · NPM 9+ ou Yarn 1.22+
 · Navegador moderno (Chrome 90+, Firefox 88+, Safari 14+)
 
-Instalação Local
+#Instalação Local
 
 bash
 # Clone o repositório
@@ -96,7 +102,7 @@ npm install
 npm run dev
 ________________________
 
-Execução Online
+#Execução Online
 
 Acesse a versão web em: https://chorty.studio
 
@@ -138,7 +144,7 @@ buscar elemento "#btnProjetos" adicionar evento "clique" com mostrarProjetos
 fechar comportamento
 ___________________________
 
-Recursos Avançados
+#Recursos Avançados
 
 Sistema de Grades
 
@@ -148,7 +154,7 @@ criar grade
 fechar grade
 
 
-Formulários Complexos
+#Formulários Complexos
 
 
 criar formulario "contato" com id "formContato"
@@ -158,7 +164,7 @@ adicionar area de texto "Sua mensagem" com id "mensagem"
 fechar formulario
 
 
-Manipulação de Eventos
+#Manipulação de Eventos
 
 
 buscar elemento "#meuBotao" adicionar evento "clique" com funcao
@@ -168,7 +174,7 @@ buscar elemento "#meuBotao" adicionar evento "clique" com funcao
 fim funcao
 
 
-Arquitetura Técnica
+#Arquitetura Técnica
 
 Fluxo de Processamento
 
@@ -177,14 +183,14 @@ Fluxo de Processamento
 3. Tradução: Conversão para HTML/CSS/JavaScript padrão
 4. Montagem: Geração do arquivo final HTML
 
-Componentes Principais
+#Componentes Principais
 
 · Dicionário CSS: Mais de 50 propriedades CSS traduzidas
 · Dicionário de Cores: 15+ cores com nomes em português
 · Sistema JavaScript: Variáveis, funções, eventos e operadores
 · Gerador HTML: Estrutura semântica automática
 
-Sistema de Tipos
+#Sistema de Tipos
 
 
 # Valores especiais
@@ -210,13 +216,13 @@ Educação
 · Material didático em português
 · Redução da curva de aprendizagem
 
-Prototipagem
+#Prototipagem
 
 · Desenvolvimento rápido de interfaces
 · Validação de conceitos com stakeholders
 · Criação de MVPs funcionais
 
-Desenvolvimento Corporativo
+#Desenvolvimento Corporativo
 
 · Padronização de código em equipes multilingues
 · Documentação técnica em português
@@ -224,14 +230,14 @@ Desenvolvimento Corporativo
 
 Melhores Práticas
 
-Convenções de Código
+#Convenções de Código
 
 1. Use # para comentários de linha única
 2. Strings sempre entre aspas duplas: "texto"
 3. IDs para elementos interativos: com id "nomeDoId"
 4. Termine linhas de JavaScript com ; automaticamente
 
-Organização de Projetos
+#Organização de Projetos
 
 
 # Estrutura recomendada
@@ -258,7 +264,7 @@ criar comportamento
 fechar comportamento
 
 
-Limitações Conhecidas
+#Limitações Conhecidas
 
 Compatibilidade
 
@@ -282,7 +288,7 @@ Como Contribuir
 4. Push para a branch: git push origin minha-feature
 5. Abra um Pull Request
 
-Áreas de Melhoria
+#Áreas de Melhoria
 
 · Expansão do dicionário de tradução
 · Otimização do motor de transpilação
@@ -297,7 +303,7 @@ Documentação
 · Exemplos práticos e tutoriais
 · FAQ atualizado regularmente
 
-Comunidade
+#Comunidade
 
 · Fórum de discussão: forum.chorty.studio
 · Canal Discord para suporte em tempo real
@@ -312,7 +318,7 @@ Utilize o sistema de Issues do GitHub para:
 · Solicitar novas funcionalidades
 
 _________________________
-Roadmap
+#Roadmap
 _________________________
 Versão 1.0 (Atual MVP)
 
@@ -336,11 +342,11 @@ Versão 3.0 (Futuro)
 · Sistema de templates profissional
 · Integração com serviços em nuvem
 
-Licença
+#Licença
 
 Distribuído sob a licença MIT. Veja LICENSE para mais informações.
 
-Reconhecimentos
+#Reconhecimentos
 
 · Comunidade de desenvolvedorés brasileiros, inspiração em VisuAlg
 · Contribuidores open source
@@ -350,5 +356,5 @@ _____________________________
 
 Chorty Studio - Democratizando o desenvolvimento web através da língua portuguesa.
 ____________________________
-Autor: ADILSON CAMBINDA RAFAEL
+#Autor: ADILSON CAMBINDA RAFAEL
 ESTUDANTE UNIVERSITARIO ANGOLANO 12/2025
