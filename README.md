@@ -20,6 +20,7 @@ Configuração de Página
 _______________________
 
 configurar metatags
+
 criar pagina "Meu Site"
 _______________________
 
@@ -27,7 +28,9 @@ Elementos Estruturais
 
 
 criar cabecalho
+
 criar corpo
+
 criar rodape
 
 
@@ -35,7 +38,9 @@ Sistema CSS Natural
 
 
 criar estilo do corpo
+
 cor de fundo: azul
+
 cor do texto: branco
 preenchimento: 2rem
 fechar estilo do corpo
@@ -45,7 +50,9 @@ Lógica JavaScript em Português
 
 
 criar comportamento
+
 definir nome como "João"
+
 definir idade como 25
 
 funcao saudacao com nome
