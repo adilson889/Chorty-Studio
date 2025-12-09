@@ -11,8 +11,6 @@ CHORTY Studio é uma plataforma de desenvolvimento revolucionária que permite a
 
 <img width="707" height="1251" alt="Image" src="https://github.com/user-attachments/assets/70a66960-96bf-4bc3-89d3-968cb0db4593" />
 
-![Image](https://github.com/user-attachments/assets/48da26b6-4dea-4818-9106-5cf7ecc8a326)
-
 <img width="717" height="1251" alt="Image" src="https://github.com/user-attachments/assets/3acbc7e5-2144-4333-92b2-6539db7ef381" />
 
 <img width="714" height="1265" alt="Image" src="https://github.com/user-attachments/assets/0111c4d2-faf6-4a98-a1cb-d468b89919db" />
