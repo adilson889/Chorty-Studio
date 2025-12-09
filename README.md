@@ -106,7 +106,7 @@ Pré-requisitos
 
 bash
 # Clone o repositório
-git clone https://github.com/seu-usuario/chorty-studio.git
+git clone https://github.com/adilson889/chorty-studio.git
 
 # Acesse o diretório do projeto
 cd chorty-studio
