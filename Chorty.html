@@ -35,19 +35,10 @@ Exemplo: chorty.html
         .animate-in { animation: fadeIn 0.3s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         textarea:focus, input:focus { outline: none; }
-        
-        #loading-screen { position: fixed; inset: 0; background: #0f172a; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; z-index: 9999; }
     </style>
 </head>
 <body>
-    <div id="root">
-        <div id="loading-screen">
-            <div style="width: 50px; height: 50px; border: 4px solid #3b82f6; border-top-color: transparent; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px;"></div>
-            <h2 style="font-weight: bold; font-size: 1.2rem;">Carregando Chorty...</h2>
-            <p style="opacity: 0.7; font-size: 0.9rem; margin-top: 10px;">Necessário internet na primeira execução.</p>
-        </div>
-    </div>
-    <style>@keyframes spin { to { transform: rotate(360deg); } }</style>
+    <div id="root"></div>
 
     <!-- Script Principal (Babel permite JSX no navegador) -->
     <script type="text/babel" data-type="module">
