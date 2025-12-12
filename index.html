@@ -11,6 +11,13 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- PWA -->
+<link rel="manifest" href="manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="apple-touch-icon" href="icon-192.png">
+    
     <style>
         body { font-family: 'Inter', sans-serif; overflow: hidden; background-color: #0f172a; touch-action: manipulation; }
         .font-mono { font-family: 'JetBrains Mono', monospace; }
@@ -79,5 +86,193 @@
         const root = ReactDOM.createRoot(document.getElementById('root'));
         root.render(<App />);
     </script>
+
+
+<script type="text/babel">
+  // ... seu código existente ...
+
+  // Modal de instalação PWA
+  const InstallPromptModal = ({ onClose, onInstall }) => {
+    return (
+      <div className="fixed inset-0 bg-black/80 z-[9999] flex items-center justify-center p-4 animate-in">
+        <div className="bg-gray-900 w-full max-w-md rounded-2xl border border-gray-700 p-6 text-center relative shadow-2xl">
+          <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl mx-auto mb-4 flex items-center justify-center shadow-lg">
+            <span className="font-bold text-3xl text-white">Ch</span>
+          </div>
+          <h2 className="text-2xl font-bold text-white mb-2">Instalar Chorty Studio</h2>
+          <p className="text-gray-300 mb-6">Instale o Chorto Studio em seu dispositivo para acesso rápido e funcionamento offline!</p>
+          
+          <div className="bg-gray-800/50 p-4 rounded-xl border border-gray-700 mb-6 text-left">
+            <div className="flex items-start gap-3">
+              <div className="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center">
+                <Icon name="zap" size={20} className="text-blue-400"/>
+              </div>
+              <div>
+                <p className="text-white font-bold">Funciona Offline</p>
+                <p className="text-gray-400 text-sm">Acesse mesmo sem internet</p>
+              </div>
+            </div>
+            
+            <div className="flex items-start gap-3 mt-4">
+              <div className="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center">
+                <Icon name="smartphone" size={20} className="text-green-400"/>
+              </div>
+              <div>
+                <p className="text-white font-bold">App Nativo</p>
+                <p className="text-gray-400 text-sm">Como um aplicativo instalado</p>
+              </div>
+            </div>
+          </div>
+          
+          <div className="flex gap-3">
+            <button 
+              onClick={onClose} 
+              className="flex-1 py-3 bg-gray-800 hover:bg-gray-700 rounded-xl text-white font-bold transition-colors"
+            >
+              Agora não
+            </button>
+            <button 
+              onClick={onInstall} 
+              className="flex-1 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 rounded-xl text-white font-bold transition-all active:scale-95"
+            >
+              Instalar Agora
+            </button>
+          </div>
+          
+          <p className="text-gray-500 text-xs mt-4">
+            Toque em "Instalar Agora" e depois em "Adicionar à tela inicial"
+          </p>
+        </div>
+      </div>
+    );
+  };
+
+   const App = () => {
+    // ... seu estado existente ...
+    
+    const [showInstallPrompt, setShowInstallPrompt] = useState(false);
+    const [deferredPrompt, setDeferredPrompt] = useState(null);
+    const [isFirstVisit, setIsFirstVisit] = useState(true);
+
+    useEffect(() => {
+      // Verificar se já está instalado
+      if (window.matchMedia('(display-mode: standalone)').matches) {
+        console.log('App já instalado');
+        return;
+      }
+
+      // Registrar service worker
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js')
+          .then(registration => {
+            console.log('Service Worker registrado:', registration);
+          })
+          .catch(error => {
+            console.log('Falha ao registrar Service Worker:', error);
+          });
+      }
+
+      // Verificar se é a primeira visita
+      const hasSeenPrompt = localStorage.getItem('chorty_install_prompt_seen');
+      
+      if (!hasSeenPrompt) {
+        // Primeira visita - mostrar modal imediatamente
+        console.log('Primeira visita - mostrando modal de instalação');
+        
+        // Mostrar modal após pequeno delay para carregar a página
+        const timer = setTimeout(() => {
+          setShowInstallPrompt(true);
+          // Marcar que já viu o prompt
+          localStorage.setItem('chorty_install_prompt_seen', 'true');
+        }, 1000); // Apenas 1 segundo para aparecer mais rápido
+        
+        return () => clearTimeout(timer);
+      } else {
+        // Não é primeira visita - usar lógica normal após 3 segundos
+        console.log('Visita recorrente - modal após 3 segundos');
+        const timer = setTimeout(() => {
+          setShowInstallPrompt(true);
+        }, 3000);
+        
+        return () => clearTimeout(timer);
+      }
+
+      // Ouvir evento de instalação
+      window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        setDeferredPrompt(e);
+        console.log('Evento beforeinstallprompt capturado');
+      });
+
+      // Limpar evento ao desmontar
+      return () => {
+        window.removeEventListener('beforeinstallprompt', () => {});
+      };
+    }, []);
+
+    const handleInstall = async () => {
+      if (deferredPrompt) {
+        console.log('Solicitando instalação...');
+        try {
+          deferredPrompt.prompt();
+          const { outcome } = await deferredPrompt.userChoice;
+          
+          if (outcome === 'accepted') {
+            console.log('Usuário aceitou a instalação');
+            // Limpar o prompt após instalação
+            localStorage.removeItem('chorty_install_prompt_seen');
+          } else {
+            console.log('Usuário recusou a instalação');
+          }
+          
+          // Independente da escolha, limpar o deferredPrompt
+          setDeferredPrompt(null);
+        } catch (error) {
+          console.error('Erro durante instalação:', error);
+        }
+      } else {
+        // Se não há deferredPrompt (navegadores mais antigos), mostrar instruções
+        alert(
+          'Para instalar o Chorty Studio:\n\n' +
+          '1. Toque no menu do navegador (ícone ⋮ ou ⋯)\n' +
+          '2. Procure a opção "Instalar app" ou "Adicionar à tela inicial"\n' +
+          '3. Toque para instalar\n\n' +
+          'Após instalação, o app aparecerá na sua tela inicial!'
+        );
+      }
+      setShowInstallPrompt(false);
+    };
+
+    const handleClose = () => {
+      setShowInstallPrompt(false);
+    
+         const closeCount = parseInt(localStorage.getItem('chorty_prompt_close_count') || '0');
+      localStorage.setItem('chorty_prompt_close_count', (closeCount + 1).toString());
+      
+      
+      if (closeCount >= 2) {
+        localStorage.setItem('chorty_install_prompt_seen', 'never_show_again');
+      }
+    };
+
+    
+
+    return (
+      <div className="flex flex-col h-screen w-screen overflow-hidden" style={{backgroundColor: th.bg, color: th.text}}>
+        {}
+        
+        {showInstallPrompt && (
+          <InstallPromptModal 
+            onClose={handleClose}
+            onInstall={handleInstall}
+          />
+        )}
+      </div>
+    );
+  };
+
+ 
+    </script>
+    
 </body>
 </html>
