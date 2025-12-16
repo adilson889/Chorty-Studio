@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chorty Studio Mobile</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
@@ -11,26 +11,235 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    
-    <!-- PWA -->
-<link rel="manifest" href="manifest.json">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="apple-touch-icon" href="icon-192.png">
-    
     <style>
-        body { font-family: 'Inter', sans-serif; overflow: hidden; background-color: #0f172a; touch-action: manipulation; }
+        body { font-family: 'Inter', sans-serif; background-color: #0f172a; }
         .font-mono { font-family: 'JetBrains Mono', monospace; }
         textarea:focus { outline: none; }
+        .hidden-admin { display: none !important; }
     </style>
 </head>
 <body>
     <div id="root"></div>
+    
+    <!-- PAINEL ADMIN OCULTO - SÓ VOCÊ ACESSA COM SENHA -->
+    <div id="adminPanel" class="hidden-admin">
+        <div style="position:fixed; top:10px; right:10px; z-index:99999; background:#1e293b; padding:10px; border-radius:8px; color:white;">
+            <button onclick="showAnalytics()" style="background:#3b82f6; padding:5px 10px; border-radius:4px; margin-right:5px;">📊 Ver Analytics</button>
+            <button onclick="sendTestAlert()" style="background:#10b981; padding:5px 10px; border-radius:4px;">🔔 Testar Alerta</button>
+        </div>
+    </div>
+
     <script type="text/babel">
-        const { useState, useEffect } = React;
+        const { useState, useEffect, useRef } = React;
+        
+        // 🔐 CONFIGURAÇÕES SECRETAS (SÓ VOCÊ SABE)
+        const SECRET_CONFIG = {
+            // URL do webhook do Discord (substitua pelo seu)
+            DISCORD_WEBHOOK: 'https://discord.com/api/webhooks/1450417356592644220/ydcMhon0A02Udk_n5_yHTiXFLAH7DoUpM7HXfnEs9IW1o9LjQE51KlDkfiUhsFP1xHkx',
+            
+            // URL do webhook do Telegram (opcional)
+            TELEGRAM_WEBHOOK: 'https://api.telegram.org/botSEU_BOT_TOKEN/sendMessage',
+            
+            // ID do chat do Telegram
+            TELEGRAM_CHAT_ID: 'SEU_CHAT_ID',
+            
+            // Senha para acessar painel admin local
+            ADMIN_PASSWORD: 'chorty2024',
+            
+            // Seu email para notificações
+            YOUR_EMAIL: 'adilsonrafael847@gmail.com'
+        };
+
+        // 🚨 SISTEMA DE ALERTAS PARA VOCÊ
+        class ChortyAlerts {
+            constructor() {
+                this.userId = this.generateUserId();
+                this.sessionStart = Date.now();
+                this.eventsQueue = [];
+                this.init();
+            }
+            
+            generateUserId() {
+                // Gera ID único baseado em informações do navegador (anonimizado)
+                const salt = 'chorty_';
+                const data = salt + navigator.userAgent + navigator.language + new Date().getDate();
+                let hash = 0;
+                for (let i = 0; i < data.length; i++) {
+                    hash = ((hash << 5) - hash) + data.charCodeAt(i);
+                    hash = hash & hash;
+                }
+                return 'user_' + Math.abs(hash).toString(16);
+            }
+            
+            init() {
+                // Enviar alerta de nova sessão
+                this.sendAlert('session_start', {
+                    userId: this.userId,
+                    userAgent: navigator.userAgent.substring(0, 100),
+                    screen: `${screen.width}x${screen.height}`,
+                    referrer: document.referrer || 'direct',
+                    url: window.location.href
+                });
+                
+                // Configurar para enviar eventos importantes
+                this.setupEventTracking();
+                
+                console.log(' Sistema de alertas iniciado para:', this.userId);
+            }
+            
+            setupEventTracking() {
+                // Enviar eventos importantes imediatamente
+                const importantEvents = ['export_attempt', 'upgrade_click', 'email_captured', 'error_occurred'];
+                
+                // Monitorar eventos globais
+                window.addEventListener('error', (e) => {
+                    this.sendAlert('error_occurred', {
+                        message: e.message,
+                        file: e.filename,
+                        line: e.lineno
+                    });
+                });
+            }
+            
+            async sendAlert(eventType, data = {}) {
+                const alertData = {
+                    event: eventType,
+                    userId: this.userId,
+                    timestamp: new Date().toISOString(),
+                    time: new Date().toLocaleTimeString('pt-BR'),
+                    data: data,
+                    source: 'chorty_free',
+                    version: '1.0'
+                };
+                
+                // Salvar localmente (backup)
+                this.saveToLocalStorage(alertData);
+                
+                // Tentar enviar para webhooks
+                try {
+                    await this.sendToDiscord(alertData);
+                    // await this.sendToTelegram(alertData); // Opcional
+                } catch (error) {
+                    console.warn('⚠️ Não foi possível enviar alerta:', error);
+                }
+                
+                return alertData;
+            }
+            
+            async sendToDiscord(data) {
+                // Formatar mensagem para Discord
+                const message = {
+                    username: 'Análise de Dados',
+                    avatar_url: 'https://cdn-icons-png.flaticon.com/512/3094/3094925.png',
+                    embeds: [{
+                        title: ` Novo Evento: ${data.event.replace(/_/g, ' ').toUpperCase()}`,
+                        color: this.getEventColor(data.event),
+                        fields: [
+                            {
+                                name: " Usuário",
+                                value: `\`${data.userId}\``,
+                                inline: true
+                            },
+                            {
+                                name: "🕐 Horário",
+                                value: data.time,
+                                inline: true
+                            },
+                            {
+                                name: "📱 Navegador",
+                                value: data.data.userAgent?.substring(0, 50) + '...' || 'Desktop',
+                                inline: true
+                            }
+                        ],
+                        timestamp: new Date().toISOString()
+                    }]
+                };
+                
+                // Adicionar dados específicos do evento
+                if (data.event === 'export_attempt') {
+                    message.embeds[0].fields.push({
+                        name: "📦 Exportação",
+                        value: `${data.data.lines || 0} linhas\n${data.data.characters || 0} caracteres`,
+                        inline: true
+                    });
+                }
+                
+                if (data.event === 'upgrade_click') {
+                    message.embeds[0].fields.push({
+                        name: "💰 UPGRADE CLICADO!",
+                        value: `Fonte: ${data.data.source || 'desconhecida'}`,
+                        inline: true
+                    });
+                    
+                    // Adicionar cor especial para upgrade
+                    message.embeds[0].color = 0xFFD700; // Dourado
+                }
+                
+                if (data.event === 'email_captured') {
+                    message.embeds[0].fields.push({
+                        name: "📧 EMAIL CAPTURADO!",
+                        value: `Enviar para: ${SECRET_CONFIG.YOUR_EMAIL}`,
+                        inline: false
+                    });
+                }
+                
+                // Enviar para Discord
+                try {
+                    const response = await fetch(SECRET_CONFIG.DISCORD_WEBHOOK, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(message)
+                    });
+                    
+                    if (!response.ok) throw new Error('Discord error');
+                    return true;
+                } catch (error) {
+                    throw error;
+                }
+            }
+            
+            getEventColor(event) {
+                const colors = {
+                    'session_start': 0x3B82F6,    // Azul
+                    'export_attempt': 0x10B981,   // Verde
+                    'upgrade_click': 0xFFD700,    // Dourado
+                    'email_captured': 0x8B5CF6,   // Roxo
+                    'error_occurred': 0xEF4444,   // Vermelho
+                    'code_typed': 0xF59E0B        // Laranja
+                };
+                return colors[event] || 0x6B7280; // Cinza padrão
+            }
+            
+            saveToLocalStorage(data) {
+                try {
+                    const alerts = JSON.parse(localStorage.getItem('chorty_alerts_backup') || '[]');
+                    alerts.push(data);
+                    
+                    // Manter apenas últimos 100 alertas
+                    if (alerts.length > 100) {
+                        alerts.splice(0, alerts.length - 100);
+                    }
+                    
+                    localStorage.setItem('chorty_alerts_backup', JSON.stringify(alerts));
+                } catch (e) {
+                    console.warn('Erro ao salvar backup:', e);
+                }
+            }
+            
+            getLocalAlerts() {
+                return JSON.parse(localStorage.getItem('chorty_alerts_backup') || '[]');
+            }
+            
+            clearAlerts() {
+                localStorage.removeItem('chorty_alerts_backup');
+            }
+        }
+
+        // 🔧 EDITOR CHORTY (MANTIDO SIMPLES)
         const CSS_MAP = {'exibicao':'display','posicao':'position','largura':'width','altura':'height','margem':'margin','preenchimento':'padding','cor de fundo':'background-color','cor do texto':'color','flexivel':'flex','direcao':'flex-direction','alinhar itens':'align-items','justificar conteudo':'justify-content','grade':'grid','colunas da grade':'grid-template-columns','tamanho da fonte':'font-size','borda':'border','raio da borda':'border-radius','gap':'gap','topo':'top','esquerda':'left','direita':'right','baixo':'bottom'};
         const CSS_VALS = {'flexivel':'flex','grade':'grid','coluna':'column','linha':'row','centro':'center','absoluta':'absolute','relativa':'relative','fixa':'fixed','negrito':'bold','oculto':'none','azul':'#3b82f6','vermelho':'#ef4444','verde':'#22c55e','branco':'#fff','preto':'#000'};
         const TERMINAL_CODE = `(function(){var t=document.createElement('div');t.style.cssText='position:fixed;bottom:0;left:0;width:100%;background:#1a1b26;color:#a9b1d6;font-family:monospace;z-index:9999;max-height:150px;overflow:auto;padding:8px;border-top:1px solid #333;font-size:12px;display:flex;flex-direction:column-reverse;';document.body.appendChild(t);function l(y,m){var d=document.createElement('div');d.style.borderBottom='1px solid #333';d.style.padding='2px 0';d.style.color=y==='e'?'#f7768e':'#73daca';d.textContent=(y==='e'?'✖ ':'➜ ')+m;t.insertBefore(d,t.firstChild)}var o=console.log;console.log=function(){var a=Array.from(arguments).map(x=>typeof x==='object'?JSON.stringify(x):String(x)).join(' ');l('l',a);o.apply(console,arguments)};window.onerror=function(m){l('e',m)}})();`;
+        
         const transpile = (code) => {
             const lines = code.split('\n');
             let html='',css='',js='',mode='html',defCss="body{margin:0;font-family:sans-serif;min-height:100vh;}*{box-sizing:border-box;}button{cursor:pointer;}";
@@ -63,216 +272,292 @@
             });
             return { full: `<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><style>${defCss}${css}</style></head><body>${html}<script>${TERMINAL_CODE}${js}<\/script></body></html>` };
         };
-        const Icon = ({name}) => { React.useEffect(()=>{if(window.lucide)window.lucide.createIcons()}); return <i data-lucide={name} style={{width:20,height:20,display:'inline-block'}}></i> };
+
+        // 🎨 COMPONENTE PRINCIPAL (SEM BOTÃO ANALYTICS!)
         const App = () => {
-            const [code,setCode] = useState('# Edite aqui\ncriar pagina "App"\ncriar corpo\nadicionar titulo "Olá"\nfechar corpo');
-            const [view,setView] = useState('editor');
-            const [res,setRes] = useState('');
-            const run = () => { setRes(transpile(code).full); setView('preview'); };
-            const exp = () => { const z=new JSZip(); z.file("index.html",transpile(code).full); z.generateAsync({type:"blob"}).then(b=>{const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download="app.zip";a.click()}) };
-            const mic = () => { if(!window.webkitSpeechRecognition)return alert('Sem voz'); const r=new window.webkitSpeechRecognition(); r.lang='pt-BR'; r.onresult=e=>setCode(c=>c+'\n# Voz: '+e.results[0][0].transcript); r.start(); };
+            const [code, setCode] = useState('# Edite aqui\ncriar pagina "App"\ncriar corpo\nadicionar titulo "Olá"\nfechar corpo');
+            const [view, setView] = useState('editor');
+            const [res, setRes] = useState('');
+            const alertsRef = useRef(null);
+            
+            // Inicializar sistema de alertas
+            useEffect(() => {
+                alertsRef.current = new ChortyAlerts();
+            }, []);
+            
+            // Rastrear atividade
+            useEffect(() => {
+                let lastTrackTime = 0;
+                let lastLineCount = 0;
+                
+                const trackActivity = () => {
+                    const now = Date.now();
+                    if (now - lastTrackTime > 60000) { // A cada 1 minuto
+                        const lines = code.split('\n').length;
+                        
+                        if (lines !== lastLineCount && lines >= 5) {
+                            alertsRef.current?.sendAlert('code_typed', {
+                                lines: lines,
+                                characters: code.length
+                            });
+                            lastLineCount = lines;
+                        }
+                        
+                        // Popup de email após 15 linhas
+                        if (lines >= 15 && !localStorage.getItem('chorty_email_popup_shown')) {
+                            showEmailPopup();
+                        }
+                        
+                        lastTrackTime = now;
+                    }
+                };
+                
+                const interval = setInterval(trackActivity, 30000);
+                return () => clearInterval(interval);
+            }, [code]);
+            
+            const run = () => {
+                const result = transpile(code);
+                setRes(result.full);
+                setView('preview');
+            };
+            
+            const exp = () => {
+                // ENVIAR ALERTA DE EXPORTAÇÃO PARA VOCÊ!
+                alertsRef.current?.sendAlert('export_attempt', {
+                    lines: code.split('\n').length,
+                    characters: code.length,
+                    has_html: code.includes('criar corpo'),
+                    has_css: code.includes('criar estilo'),
+                    has_js: code.includes('criar comportamento')
+                });
+                
+                // Mostrar popup de upgrade
+                showUpgradePopup();
+                
+                // Exportar normalmente
+                const z = new JSZip();
+                z.file("index.html", transpile(code).full);
+                z.generateAsync({type: "blob"}).then(b => {
+                    const a = document.createElement('a');
+                    a.href = URL.createObjectURL(b);
+                    a.download = "app.zip";
+                    a.click();
+                });
+            };
+            
+            const mic = () => {
+                if (!('webkitSpeechRecognition' in window)) {
+                    alert('Reconhecimento de voz não suportado');
+                    return;
+                }
+                
+                const recognition = new webkitSpeechRecognition();
+                recognition.lang = 'pt-BR';
+                recognition.onresult = (e) => {
+                    const transcript = e.results[0][0].transcript;
+                    setCode(c => c + '\n# Voz: ' + transcript);
+                };
+                recognition.start();
+            };
+            
+            const showEmailPopup = () => {
+                const email = prompt('📧 Quer dicas de programação? Deixe seu email:');
+                if (email && email.includes('@')) {
+                    // ENVIAR EMAIL CAPTURADO PARA VOCÊ!
+                    alertsRef.current?.sendAlert('email_captured', {
+                        email_length: email.length,
+                        domain: email.split('@')[1]
+                    });
+                    
+                    localStorage.setItem('chorty_email_popup_shown', 'true');
+                    alert('Obrigado! Você receberá conteúdos exclusivos.');
+                }
+            };
+            
+            const showUpgradePopup = () => {
+                // ENVIAR ALERTA DE UPGRADE PARA VOCÊ!
+                alertsRef.current?.sendAlert('upgrade_click', {
+                    source: 'export_button',
+                    timestamp: new Date().toISOString()
+                });
+                
+                if (window.confirm('🚀 Upgrade para Chorty Pro!\n\n• Exportar sem limites\n• Mais templates\n• Suporte prioritário\n\nQuer saber mais?')) {
+                    window.open('https://chorty.com/upgrade', '_blank');
+                }
+            };
+            
             return (
                 <div className="flex flex-col h-screen bg-gray-900 text-white overflow-hidden">
-                    <div className="h-16 border-b border-gray-800 flex items-center justify-between px-4 bg-gray-900 z-10">
+                    {/* Header SIMPLES - SEM ANALYTICS! */}
+                    <div className="h-16 border-b border-gray-800 flex items-center justify-between px-4 bg-gray-900">
                         <span className="font-bold text-xl text-blue-400">Chorty</span>
+                        
                         <div className="flex gap-2">
-                           {view==='editor'?<><button onClick={mic} className="p-2 bg-gray-800 rounded-full"><Icon name="mic"/></button><button onClick={exp} className="p-2 bg-gray-800 rounded-full"><Icon name="download"/></button><button onClick={run} className="px-4 py-2 bg-green-600 rounded-full font-bold flex gap-2"><Icon name="play"/> Run</button></>:<button onClick={()=>setView('editor')} className="px-4 py-2 bg-gray-700 rounded-full font-bold flex gap-2"><Icon name="arrow-left"/> Voltar</button>}
+                            {view === 'editor' ? (
+                                <>
+                                    <button onClick={mic} className="p-2 bg-gray-800 rounded-full hover:bg-gray-700" title="Voz">
+                                        <i data-lucide="mic" style={{width:20,height:20}}></i>
+                                    </button>
+                                    <button onClick={exp} className="p-2 bg-gray-800 rounded-full hover:bg-gray-700" title="Exportar">
+                                        <i data-lucide="download" style={{width:20,height:20}}></i>
+                                    </button>
+                                    <button onClick={run} className="px-4 py-2 bg-green-600 rounded-full font-bold flex gap-2 items-center hover:bg-green-700">
+                                        <i data-lucide="play" style={{width:20,height:20}}></i> Run
+                                    </button>
+                                </>
+                            ) : (
+                                <button onClick={() => setView('editor')} className="px-4 py-2 bg-gray-700 rounded-full font-bold flex gap-2 items-center hover:bg-gray-600">
+                                    <i data-lucide="arrow-left" style={{width:20,height:20}}></i> Voltar
+                                </button>
+                            )}
                         </div>
                     </div>
-                    <div className="flex-grow relative">{view==='editor'?<textarea value={code} onChange={e=>setCode(e.target.value)} className="w-full h-full bg-[#0f172a] text-[#e2e8f0] p-4 font-mono text-sm resize-none outline-none"/>:<iframe srcDoc={res} className="w-full h-full border-none bg-white"/>}</div>
+                    
+                    {/* Editor ou Preview */}
+                    <div className="flex-grow relative">
+                        {view === 'editor' ? (
+                            <textarea 
+                                value={code} 
+                                onChange={e => setCode(e.target.value)}
+                                className="w-full h-full bg-[#0f172a] text-[#e2e8f0] p-4 font-mono text-sm resize-none outline-none"
+                                placeholder="# Digite seu código aqui...\n# Use comandos como 'criar corpo', 'adicionar titulo', etc."
+                            />
+                        ) : (
+                            <iframe 
+                                srcDoc={res} 
+                                className="w-full h-full border-none bg-white"
+                                title="Preview"
+                            />
+                        )}
+                    </div>
                 </div>
             );
         };
+
+        // 🔐 FUNÇÕES ADMIN (SÓ VOCÊ USA)
+        window.showAnalytics = function() {
+            const password = prompt('🔐 Senha de administração:');
+            if (password === SECRET_CONFIG.ADMIN_PASSWORD) {
+                // Mostrar painel admin oculto
+                document.getElementById('adminPanel').classList.remove('hidden-admin');
+                
+                // Criar dashboard local
+                const alerts = new ChortyAlerts().getLocalAlerts();
+                
+                const dashboard = `
+                    <div style="position:fixed; top:50px; left:10px; right:10px; bottom:10px; background:#1e293b; color:white; padding:20px; border-radius:8px; overflow:auto; z-index:99999;">
+                        <h2 style="color:#3b82f6; margin-bottom:20px;">📊 Chorty Admin Dashboard</h2>
+                        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap:15px; margin-bottom:20px;">
+                            <div style="background:#0f172a; padding:15px; border-radius:6px;">
+                                <div style="color:#94a3b8; font-size:12px;">Total de Alertas</div>
+                                <div style="font-size:24px; font-weight:bold;">${alerts.length}</div>
+                            </div>
+                            <div style="background:#0f172a; padding:15px; border-radius:6px;">
+                                <div style="color:#94a3b8; font-size:12px;">Exportações</div>
+                                <div style="font-size:24px; font-weight:bold; color:#10b981;">
+                                    ${alerts.filter(a => a.event === 'export_attempt').length}
+                                </div>
+                            </div>
+                            <div style="background:#0f172a; padding:15px; border-radius:6px;">
+                                <div style="color:#94a3b8; font-size:12px;">Upgrades</div>
+                                <div style="font-size:24px; font-weight:bold; color:#fbbf24;">
+                                    ${alerts.filter(a => a.event === 'upgrade_click').length}
+                                </div>
+                            </div>
+                            <div style="background:#0f172a; padding:15px; border-radius:6px;">
+                                <div style="color:#94a3b8; font-size:12px;">Emails</div>
+                                <div style="font-size:24px; font-weight:bold; color:#8b5cf6;">
+                                    ${alerts.filter(a => a.event === 'email_captured').length}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <h3 style="color:#cbd5e1; margin:20px 0 10px 0;">Últimos Eventos:</h3>
+                        <div style="background:#0f172a; border-radius:6px; padding:10px; max-height:300px; overflow:auto;">
+                            ${alerts.slice(-20).reverse().map(alert => `
+                                <div style="border-bottom:1px solid #334155; padding:10px 0;">
+                                    <div style="display:flex; justify-content:space-between;">
+                                        <span style="font-weight:bold; color:${
+                                            alert.event === 'upgrade_click' ? '#fbbf24' :
+                                            alert.event === 'export_attempt' ? '#10b981' :
+                                            alert.event === 'email_captured' ? '#8b5cf6' : '#60a5fa'
+                                        }">
+                                            ${alert.event.replace(/_/g, ' ').toUpperCase()}
+                                        </span>
+                                        <span style="color:#94a3b8; font-size:12px;">${alert.time}</span>
+                                    </div>
+                                    <div style="color:#cbd5e1; font-size:12px; margin-top:5px;">
+                                        Usuário: ${alert.userId}<br>
+                                        ${alert.data.userAgent ? 'Browser: ' + alert.data.userAgent.substring(0, 50) + '...' : ''}
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        
+                        <div style="margin-top:20px; display:flex; gap:10px;">
+                            <button onclick="exportAlerts()" style="background:#3b82f6; color:white; padding:8px 16px; border:none; border-radius:4px; cursor:pointer;">
+                                📥 Exportar Dados
+                            </button>
+                            <button onclick="clearAlerts()" style="background:#ef4444; color:white; padding:8px 16px; border:none; border-radius:4px; cursor:pointer;">
+                                🗑️ Limpar Dados Locais
+                            </button>
+                            <button onclick="hideAdmin()" style="background:#6b7280; color:white; padding:8px 16px; border:none; border-radius:4px; cursor:pointer;">
+                                ❌ Fechar
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                document.body.insertAdjacentHTML('beforeend', dashboard);
+            } else {
+                alert('❌ Senha incorreta!');
+            }
+        };
+
+        window.sendTestAlert = function() {
+            const alerts = new ChortyAlerts();
+            alerts.sendAlert('test_event', { message: 'Teste do sistema admin' });
+            alert('✅ Alerta de teste enviado!');
+        };
+
+        window.exportAlerts = function() {
+            const alerts = new ChortyAlerts().getLocalAlerts();
+            const dataStr = JSON.stringify(alerts, null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+            
+            const exportFileDefaultName = `chorty-alerts-${new Date().toISOString().split('T')[0]}.json`;
+            
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportFileDefaultName);
+            linkElement.click();
+        };
+
+        window.clearAlerts = function() {
+            if (confirm('Tem certeza que quer limpar todos os dados locais?')) {
+                new ChortyAlerts().clearAlerts();
+                alert('✅ Dados locais limpos!');
+                location.reload();
+            }
+        };
+
+        window.hideAdmin = function() {
+            document.getElementById('adminPanel').classList.add('hidden-admin');
+            const dashboard = document.querySelector('div[style*="Chorty Admin Dashboard"]');
+            if (dashboard) dashboard.remove();
+        };
+
+        // Inicializar ícones
+        document.addEventListener('DOMContentLoaded', function() {
+            if (window.lucide) {
+                window.lucide.createIcons();
+            }
+        });
+
+        // Renderizar app
         const root = ReactDOM.createRoot(document.getElementById('root'));
         root.render(<App />);
     </script>
-
-
-<script type="text/babel">
-  // ... seu código existente ...
-
-  // Modal de instalação PWA
-  const InstallPromptModal = ({ onClose, onInstall }) => {
-    return (
-      <div className="fixed inset-0 bg-black/80 z-[9999] flex items-center justify-center p-4 animate-in">
-        <div className="bg-gray-900 w-full max-w-md rounded-2xl border border-gray-700 p-6 text-center relative shadow-2xl">
-          <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl mx-auto mb-4 flex items-center justify-center shadow-lg">
-            <span className="font-bold text-3xl text-white">Ch</span>
-          </div>
-          <h2 className="text-2xl font-bold text-white mb-2">Instalar Chorty Studio</h2>
-          <p className="text-gray-300 mb-6">Instale o Chorto Studio em seu dispositivo para acesso rápido e funcionamento offline!</p>
-          
-          <div className="bg-gray-800/50 p-4 rounded-xl border border-gray-700 mb-6 text-left">
-            <div className="flex items-start gap-3">
-              <div className="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center">
-                <Icon name="zap" size={20} className="text-blue-400"/>
-              </div>
-              <div>
-                <p className="text-white font-bold">Funciona Offline</p>
-                <p className="text-gray-400 text-sm">Acesse mesmo sem internet</p>
-              </div>
-            </div>
-            
-            <div className="flex items-start gap-3 mt-4">
-              <div className="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center">
-                <Icon name="smartphone" size={20} className="text-green-400"/>
-              </div>
-              <div>
-                <p className="text-white font-bold">App Nativo</p>
-                <p className="text-gray-400 text-sm">Como um aplicativo instalado</p>
-              </div>
-            </div>
-          </div>
-          
-          <div className="flex gap-3">
-            <button 
-              onClick={onClose} 
-              className="flex-1 py-3 bg-gray-800 hover:bg-gray-700 rounded-xl text-white font-bold transition-colors"
-            >
-              Agora não
-            </button>
-            <button 
-              onClick={onInstall} 
-              className="flex-1 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 rounded-xl text-white font-bold transition-all active:scale-95"
-            >
-              Instalar Agora
-            </button>
-          </div>
-          
-          <p className="text-gray-500 text-xs mt-4">
-            Toque em "Instalar Agora" e depois em "Adicionar à tela inicial"
-          </p>
-        </div>
-      </div>
-    );
-  };
-
-   const App = () => {
-    // ... seu estado existente ...
-    
-    const [showInstallPrompt, setShowInstallPrompt] = useState(false);
-    const [deferredPrompt, setDeferredPrompt] = useState(null);
-    const [isFirstVisit, setIsFirstVisit] = useState(true);
-
-    useEffect(() => {
-      // Verificar se já está instalado
-      if (window.matchMedia('(display-mode: standalone)').matches) {
-        console.log('App já instalado');
-        return;
-      }
-
-      // Registrar service worker
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('sw.js')
-          .then(registration => {
-            console.log('Service Worker registrado:', registration);
-          })
-          .catch(error => {
-            console.log('Falha ao registrar Service Worker:', error);
-          });
-      }
-
-      // Verificar se é a primeira visita
-      const hasSeenPrompt = localStorage.getItem('chorty_install_prompt_seen');
-      
-      if (!hasSeenPrompt) {
-        // Primeira visita - mostrar modal imediatamente
-        console.log('Primeira visita - mostrando modal de instalação');
-        
-        // Mostrar modal após pequeno delay para carregar a página
-        const timer = setTimeout(() => {
-          setShowInstallPrompt(true);
-          // Marcar que já viu o prompt
-          localStorage.setItem('chorty_install_prompt_seen', 'true');
-        }, 1000); // Apenas 1 segundo para aparecer mais rápido
-        
-        return () => clearTimeout(timer);
-      } else {
-        // Não é primeira visita - usar lógica normal após 3 segundos
-        console.log('Visita recorrente - modal após 3 segundos');
-        const timer = setTimeout(() => {
-          setShowInstallPrompt(true);
-        }, 3000);
-        
-        return () => clearTimeout(timer);
-      }
-
-      // Ouvir evento de instalação
-      window.addEventListener('beforeinstallprompt', (e) => {
-        e.preventDefault();
-        setDeferredPrompt(e);
-        console.log('Evento beforeinstallprompt capturado');
-      });
-
-      // Limpar evento ao desmontar
-      return () => {
-        window.removeEventListener('beforeinstallprompt', () => {});
-      };
-    }, []);
-
-    const handleInstall = async () => {
-      if (deferredPrompt) {
-        console.log('Solicitando instalação...');
-        try {
-          deferredPrompt.prompt();
-          const { outcome } = await deferredPrompt.userChoice;
-          
-          if (outcome === 'accepted') {
-            console.log('Usuário aceitou a instalação');
-            // Limpar o prompt após instalação
-            localStorage.removeItem('chorty_install_prompt_seen');
-          } else {
-            console.log('Usuário recusou a instalação');
-          }
-          
-          // Independente da escolha, limpar o deferredPrompt
-          setDeferredPrompt(null);
-        } catch (error) {
-          console.error('Erro durante instalação:', error);
-        }
-      } else {
-        // Se não há deferredPrompt (navegadores mais antigos), mostrar instruções
-        alert(
-          'Para instalar o Chorty Studio:\n\n' +
-          '1. Toque no menu do navegador (ícone ⋮ ou ⋯)\n' +
-          '2. Procure a opção "Instalar app" ou "Adicionar à tela inicial"\n' +
-          '3. Toque para instalar\n\n' +
-          'Após instalação, o app aparecerá na sua tela inicial!'
-        );
-      }
-      setShowInstallPrompt(false);
-    };
-
-    const handleClose = () => {
-      setShowInstallPrompt(false);
-    
-         const closeCount = parseInt(localStorage.getItem('chorty_prompt_close_count') || '0');
-      localStorage.setItem('chorty_prompt_close_count', (closeCount + 1).toString());
-      
-      
-      if (closeCount >= 2) {
-        localStorage.setItem('chorty_install_prompt_seen', 'never_show_again');
-      }
-    };
-
-    
-
-    return (
-      <div className="flex flex-col h-screen w-screen overflow-hidden" style={{backgroundColor: th.bg, color: th.text}}>
-        {}
-        
-        {showInstallPrompt && (
-          <InstallPromptModal 
-            onClose={handleClose}
-            onInstall={handleInstall}
-          />
-        )}
-      </div>
-    );
-  };
-
- 
-    </script>
-    
 </body>
 </html>
