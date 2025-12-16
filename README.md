@@ -4,8 +4,8 @@ Chorty Studio é um ambiente inovador para criar sites e aplicações web, usand
 
 ##Demostração
 
-https://github.com/user-attachments/assets/aab4d54f-0a5d-45e5-ad71-b55aa401525b
-
+<video src="https://github.com/user-attachments/assets/aab4d54f-0a5d-45e5-ad71-b55aa401525b
+" width="520" controls></video>
 
 ## Objetivo
 
