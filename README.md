@@ -2,10 +2,6 @@
 
 Chorty Studio é um ambiente inovador para criar sites e aplicações web, usando comandos simples e totalmente em português. Com Chorty Studio, você elimina as barreiras do inglês e da complexidade dos códigos tradicionais, tornando o desenvolvimento web acessível para todos.
 
-##Demostração
-
-<video src="assets/aab4d54f-0a5d-45e5-ad71-b55aa401525b
-" width="520" controls></video>
 
 ## Objetivo
 
