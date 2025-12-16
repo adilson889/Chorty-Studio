@@ -21,6 +21,12 @@ O principal objetivo do Chorty Studio é democratizar o desenvolvimento web, per
 - Interface amigável, desenvolvida pensando em quem está começando.
 - Estrutura flexível tanto para aprendizado quanto para projetos rápidos.
 
+## Captura de tela
+
+
+<img width="713" height="1261" alt="Image" src="https://github.com/user-attachments/assets/5a05b0df-640a-4678-9f7a-7733af74738d" />
+
+
 ## Como usar
 
 1. Faça o clone do repositório:
