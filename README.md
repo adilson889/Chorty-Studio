@@ -2,6 +2,11 @@
 
 Chorty Studio é um ambiente inovador para criar sites e aplicações web, usando comandos simples e totalmente em português. Com Chorty Studio, você elimina as barreiras do inglês e da complexidade dos códigos tradicionais, tornando o desenvolvimento web acessível para todos.
 
+##Demostração
+
+https://github.com/user-attachments/assets/aab4d54f-0a5d-45e5-ad71-b55aa401525b
+
+
 ## Objetivo
 
 O principal objetivo do Chorty Studio é democratizar o desenvolvimento web, permitindo que pessoas com pouca ou nenhuma experiência em programação criem projetos reais, utilizando apenas a língua portuguesa. Este projeto facilita a entrada de novos desenvolvedores no universo da tecnologia, além de ser uma ferramenta poderosa para educadores.
@@ -33,9 +38,13 @@ O principal objetivo do Chorty Studio é democratizar o desenvolvimento web, per
 
 Comandos como:
 ```
-criar pagina "meu-site"
-adicionar botao "Clique aqui"
-definir variavel "nome" = "Seu nome"
+# Edite aqui
+
+criar pagina "Olá Mundo"
+  criar corpo
+    adicionar titulo "Olá Mundo"
+  fechar corpo
+fechar pagina
 ```
 São interpretados instantaneamente e geram um site funcional, pronto para ser customizado ou publicado.
 
