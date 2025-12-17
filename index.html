@@ -4,12 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chorty Studio Mobile</title>
-<!-- PWA -->
-<link rel="manifest" href="manifest.json">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="apple-touch-icon" href="icon-192.png">
-
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
@@ -17,6 +11,13 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    
+     <!-- PWA -->
+<link rel="manifest" href="manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="apple-touch-icon" href="icon-192.png">
+    
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #0f172a; }
         .font-mono { font-family: 'JetBrains Mono', monospace; }
@@ -30,15 +31,15 @@
     <!-- PAINEL ADMIN OCULTO - SÓ VOCÊ ACESSA COM SENHA -->
     <div id="adminPanel" class="hidden-admin">
         <div style="position:fixed; top:10px; right:10px; z-index:99999; background:#1e293b; padding:10px; border-radius:8px; color:white;">
-            <button onclick="showAnalytics()" style="background:#3b82f6; padding:5px 10px; border-radius:4px; margin-right:5px;">📊 Ver Analytics</button>
-            <button onclick="sendTestAlert()" style="background:#10b981; padding:5px 10px; border-radius:4px;">🔔 Testar Alerta</button>
+            <button onclick="showAnalytics()" style="background:#3b82f6; padding:5px 10px; border-radius:4px; margin-right:5px;"> Ver Analytics</button>
+            <button onclick="sendTestAlert()" style="background:#10b981; padding:5px 10px; border-radius:4px;"> Testar Alerta</button>
         </div>
     </div>
 
     <script type="text/babel">
         const { useState, useEffect, useRef } = React;
         
-        // 🔐 CONFIGURAÇÕES SECRETAS (SÓ VOCÊ SABE)
+        //  CONFIGURAÇÕES SECRETAS (SÓ VOCÊ SABE)
         const SECRET_CONFIG = {
             // URL do webhook do Discord (substitua pelo seu)
             DISCORD_WEBHOOK: 'https://discord.com/api/webhooks/1450417356592644220/ydcMhon0A02Udk_n5_yHTiXFLAH7DoUpM7HXfnEs9IW1o9LjQE51KlDkfiUhsFP1xHkx',
@@ -56,7 +57,7 @@
             YOUR_EMAIL: 'adilsonrafael847@gmail.com'
         };
 
-        // 🚨 SISTEMA DE ALERTAS PARA VOCÊ
+        // SISTEMA DE ALERTAS PARA VOCÊ
         class ChortyAlerts {
             constructor() {
                 this.userId = this.generateUserId();
@@ -126,7 +127,7 @@
                     await this.sendToDiscord(alertData);
                     // await this.sendToTelegram(alertData); // Opcional
                 } catch (error) {
-                    console.warn('⚠️ Não foi possível enviar alerta:', error);
+                    console.warn(' Não foi possível enviar alerta:', error);
                 }
                 
                 return alertData;
@@ -164,7 +165,7 @@
                 // Adicionar dados específicos do evento
                 if (data.event === 'export_attempt') {
                     message.embeds[0].fields.push({
-                        name: "📦 Exportação",
+                        name: " Exportação",
                         value: `${data.data.lines || 0} linhas\n${data.data.characters || 0} caracteres`,
                         inline: true
                     });
@@ -183,7 +184,7 @@
                 
                 if (data.event === 'email_captured') {
                     message.embeds[0].fields.push({
-                        name: "📧 EMAIL CAPTURADO!",
+                        name: " EMAIL CAPTURADO!",
                         value: `Enviar para: ${SECRET_CONFIG.YOUR_EMAIL}`,
                         inline: false
                     });
@@ -241,7 +242,7 @@
             }
         }
 
-        // 🔧 EDITOR CHORTY (MANTIDO SIMPLES)
+        // EDITOR CHORTY (MANTIDO SIMPLES)
         const CSS_MAP = {'exibicao':'display','posicao':'position','largura':'width','altura':'height','margem':'margin','preenchimento':'padding','cor de fundo':'background-color','cor do texto':'color','flexivel':'flex','direcao':'flex-direction','alinhar itens':'align-items','justificar conteudo':'justify-content','grade':'grid','colunas da grade':'grid-template-columns','tamanho da fonte':'font-size','borda':'border','raio da borda':'border-radius','gap':'gap','topo':'top','esquerda':'left','direita':'right','baixo':'bottom'};
         const CSS_VALS = {'flexivel':'flex','grade':'grid','coluna':'column','linha':'row','centro':'center','absoluta':'absolute','relativa':'relative','fixa':'fixed','negrito':'bold','oculto':'none','azul':'#3b82f6','vermelho':'#ef4444','verde':'#22c55e','branco':'#fff','preto':'#000'};
         const TERMINAL_CODE = `(function(){var t=document.createElement('div');t.style.cssText='position:fixed;bottom:0;left:0;width:100%;background:#1a1b26;color:#a9b1d6;font-family:monospace;z-index:9999;max-height:150px;overflow:auto;padding:8px;border-top:1px solid #333;font-size:12px;display:flex;flex-direction:column-reverse;';document.body.appendChild(t);function l(y,m){var d=document.createElement('div');d.style.borderBottom='1px solid #333';d.style.padding='2px 0';d.style.color=y==='e'?'#f7768e':'#73daca';d.textContent=(y==='e'?'✖ ':'➜ ')+m;t.insertBefore(d,t.firstChild)}var o=console.log;console.log=function(){var a=Array.from(arguments).map(x=>typeof x==='object'?JSON.stringify(x):String(x)).join(' ');l('l',a);o.apply(console,arguments)};window.onerror=function(m){l('e',m)}})();`;
@@ -279,7 +280,7 @@
             return { full: `<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><style>${defCss}${css}</style></head><body>${html}<script>${TERMINAL_CODE}${js}<\/script></body></html>` };
         };
 
-        // 🎨 COMPONENTE PRINCIPAL (SEM BOTÃO ANALYTICS!)
+        //  COMPONENTE PRINCIPAL (SEM BOTÃO ANALYTICS!)
         const App = () => {
             const [code, setCode] = useState('# Edite aqui\ncriar pagina "App"\ncriar corpo\nadicionar titulo "Olá"\nfechar corpo');
             const [view, setView] = useState('editor');
@@ -362,13 +363,13 @@
                 recognition.lang = 'pt-BR';
                 recognition.onresult = (e) => {
                     const transcript = e.results[0][0].transcript;
-                    setCode(c => c + '\n# Voz: ' + transcript);
+                    setCode(c => c + '\n#' + transcript);
                 };
                 recognition.start();
             };
             
             const showEmailPopup = () => {
-                const email = prompt('📧 Quer dicas de programação? Deixe seu email:');
+                const email = prompt(' Quer dicas de programação? Deixe seu email:');
                 if (email && email.includes('@')) {
                     // ENVIAR EMAIL CAPTURADO PARA VOCÊ!
                     alertsRef.current?.sendAlert('email_captured', {
@@ -388,8 +389,8 @@
                     timestamp: new Date().toISOString()
                 });
                 
-                if (window.confirm('🚀 Upgrade para Chorty Pro!\n\n• Exportar sem limites\n• Mais templates\n• Suporte prioritário\n\nQuer saber mais?')) {
-                    window.open('https://chorty.com/upgrade', '_blank');
+                if (window.confirm(' Upgrade para Chorty Pro!\n\n• Exportar sem limites\n• Mais templates\n• Suporte prioritário\n\nQuer saber mais?')) {
+                    window.open('https://chortystudio.netlify.app/', '_blank');
                 }
             };
             
@@ -441,9 +442,9 @@
             );
         };
 
-        // 🔐 FUNÇÕES ADMIN (SÓ VOCÊ USA)
+        //  FUNÇÕES ADMIN (SÓ VOCÊ USA)
         window.showAnalytics = function() {
-            const password = prompt('🔐 Senha de administração:');
+            const password = prompt(' Senha de administração:');
             if (password === SECRET_CONFIG.ADMIN_PASSWORD) {
                 // Mostrar painel admin oculto
                 document.getElementById('adminPanel').classList.remove('hidden-admin');
@@ -453,7 +454,7 @@
                 
                 const dashboard = `
                     <div style="position:fixed; top:50px; left:10px; right:10px; bottom:10px; background:#1e293b; color:white; padding:20px; border-radius:8px; overflow:auto; z-index:99999;">
-                        <h2 style="color:#3b82f6; margin-bottom:20px;">📊 Chorty Admin Dashboard</h2>
+                        <h2 style="color:#3b82f6; margin-bottom:20px;"> Chorty Dashboard</h2>
                         <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap:15px; margin-bottom:20px;">
                             <div style="background:#0f172a; padding:15px; border-radius:6px;">
                                 <div style="color:#94a3b8; font-size:12px;">Total de Alertas</div>
@@ -503,13 +504,13 @@
                         
                         <div style="margin-top:20px; display:flex; gap:10px;">
                             <button onclick="exportAlerts()" style="background:#3b82f6; color:white; padding:8px 16px; border:none; border-radius:4px; cursor:pointer;">
-                                📥 Exportar Dados
+                                 Exportar Dados
                             </button>
                             <button onclick="clearAlerts()" style="background:#ef4444; color:white; padding:8px 16px; border:none; border-radius:4px; cursor:pointer;">
-                                🗑️ Limpar Dados Locais
+                                 Limpar Dados Locais
                             </button>
                             <button onclick="hideAdmin()" style="background:#6b7280; color:white; padding:8px 16px; border:none; border-radius:4px; cursor:pointer;">
-                                ❌ Fechar
+                                 Fechar
                             </button>
                         </div>
                     </div>
@@ -517,7 +518,7 @@
                 
                 document.body.insertAdjacentHTML('beforeend', dashboard);
             } else {
-                alert('❌ Senha incorreta!');
+                alert(' Senha incorreta!');
             }
         };
 
@@ -565,9 +566,9 @@
         const root = ReactDOM.createRoot(document.getElementById('root'));
         root.render(<App />);
     </script>
-
-
-<script type="text/babel">
+    
+    
+  <script type="text/babel">
   // ... seu código existente ...
 
   // Modal de instalação PWA
@@ -751,8 +752,7 @@
   };
 
  
-    </script>
-
-
+    </script>t>
+    
 </body>
 </html>
