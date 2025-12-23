@@ -19,7 +19,7 @@
 
 ## 1. INTRODUÇÃO & FILOSOFIA
 
-O Que É Chorty?
+# O Que É Chorty?
 
 Chorty é uma linguagem de programação visual/declarativa projetada para ser transpilada para múltiplas plataformas (HTML, Python, Java, C#, etc.) mantendo a mesma sintaxe.
 
@@ -46,7 +46,7 @@ fim
 
 ------------------------------------
 
-2. ESTRUTURA FUNDAMENTAL
+## 2. ESTRUTURA FUNDAMENTAL
 
 Bloco app (Raiz)
 
@@ -58,7 +58,7 @@ app "NomeDoApp"
 fim
 ```
 
-Atributos opcionais:
+## Atributos opcionais:
 
 ```chor
 app "MeuApp"
@@ -69,7 +69,7 @@ app "MeuApp"
 fim
 ```
 
-Hierarquia de Blocos
+## Hierarquia de Blocos
 
 ```
 app
@@ -82,9 +82,9 @@ app
 
 ---
 
-3. DECLARAÇÕES & CONFIGURAÇÕES
+## 3. DECLARAÇÕES & CONFIGURAÇÕES
 
-Bloco config
+# Bloco config
 
 Define metadados e configurações globais.
 
@@ -102,7 +102,7 @@ config
         debug: verdadeiro
 ```
 
-Propriedades especiais de saida:
+# Propriedades especiais de saida:
 
 · "html": Gera Single Page Application
 · "python_console": Script de terminal Python
@@ -114,9 +114,9 @@ Propriedades especiais de saida:
 
 ---
 
-4. SISTEMA DE DADOS
+## 4. SISTEMA DE DADOS
 
-Tipos de Dados Nativos
+#Tipos de Dados Nativos
 
 ```chor
 dados
@@ -140,7 +140,7 @@ dados
             cidade: texto
 ```
 
-Sistema de Tipos
+# Sistema de Tipos
 
 Tipo Chorty Descrição Exemplo
 texto Strings Unicode "Olá", "123"
@@ -152,7 +152,7 @@ cor Cores (hex/rgb) "#FF0000", "azul"
 lista de T Arrays tipados [1, 2, 3]
 mapa de K para V Dicionários {"chave": "valor"}
 
-Modificadores de Acesso
+# Modificadores de Acesso
 
 ```chor
 dados
@@ -163,7 +163,7 @@ dados
 
 ---
 
-5. SISTEMA DE INTERFACE (TELAS)
+# 5. SISTEMA DE INTERFACE (TELAS)
 
 Bloco tela Básico
 
@@ -179,7 +179,7 @@ tela "Principal"
 fim
 ```
 
-Elementos de UI Disponíveis
+# Elementos de UI Disponíveis
 
 Texto e Exibição
 
@@ -204,7 +204,7 @@ barra_progresso valor=75 max=100
 status ativo cor="verde" texto="Online"
 ```
 
-Entrada de Dados
+# Entrada de Dados
 
 ```chor
 # Campos de texto
@@ -230,7 +230,7 @@ data_hora "Agendamento" -> agendamento
 area_texto "Comentários" linhas=5 -> comentarios
 ```
 
-Controles de Ação
+# Controles de Ação
 
 ```chor
 # Botões
