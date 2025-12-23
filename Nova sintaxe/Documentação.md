@@ -1,6 +1,7 @@
 # Chorty V 4.0- uma nova sintaxe
 
-Índice
+------------------------------------
+## Índice
 
 1. Introdução & Filosofia
 2. Estrutura Fundamental
@@ -14,15 +15,15 @@
 10. Tutorial Prático Completo
 11. Referência da API
 
----
+------------------------------------
 
-1. INTRODUÇÃO & FILOSOFIA
+## 1. INTRODUÇÃO & FILOSOFIA
 
 O Que É Chorty?
 
 Chorty é uma linguagem de programação visual/declarativa projetada para ser transpilada para múltiplas plataformas (HTML, Python, Java, C#, etc.) mantendo a mesma sintaxe.
 
-Princípios de Design
+## Princípios de Design
 
 1. Universalidade: Uma sintaxe, múltiplas plataformas
 2. Declarativo: Descreva O QUE, não COMO
@@ -30,7 +31,7 @@ Princípios de Design
 4. Reatividade Nativa: Dados atualizam UI automaticamente
 5. Componentização: Tudo é reutilizável
 
-Hello World Universal
+## Hello World Universal
 
 ```chor
 app "HelloWorld"
@@ -43,7 +44,7 @@ app "HelloWorld"
 fim
 ```
 
----
+------------------------------------
 
 2. ESTRUTURA FUNDAMENTAL
 
