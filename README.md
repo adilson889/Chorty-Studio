@@ -6,7 +6,7 @@ Chorty é uma ferramenta visual/declarativa projetada para ser transpilada para 
 
 É um ambiente inovador para criar sites e muito mais, usando comandos simples e totalmente em português. Com Chorty Studio, você elimina as barreiras do inglês e da complexidade dos códigos tradicionais, tornando o desenvolvimento web acessível para todos.
 
-# Nova sintaxe disponível. Acesso a pasta "Nova sintaxe/ documentação"
+# Nova sintaxe disponível. Acesse a pasta "Nova sintaxe/ documentação"
 
 
 ## Objetivo
