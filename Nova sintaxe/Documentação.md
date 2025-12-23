@@ -21,7 +21,7 @@
 
 # O Que É Chorty?
 
-Chorty é uma linguagem de programação visual/declarativa projetada para ser transpilada para múltiplas plataformas (HTML, Python, Java, C#, etc.) mantendo a mesma sintaxe.
+Chorty é uma pseudo linguagem de programação visual/declarativa projetada para ser transpilada para múltiplas plataformas (HTML, Python, Java, C#, etc.) mantendo a mesma sintaxe.
 
 ## Princípios de Design
 
