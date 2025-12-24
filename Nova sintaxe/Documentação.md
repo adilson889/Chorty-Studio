@@ -1,4 +1,4 @@
-# Chorty V 4.0- uma nova sintaxe
+@# Chorty V 4.0- uma nova sintaxe
 
 ------------------------------------
 ## Índice
@@ -254,7 +254,7 @@ menu_acao "Opções"
     item "Excluir" ação: excluir
 ```
 
-Layout e Containers
+# Layout e Containers
 
 ```chor
 # Agrupamento lógico
