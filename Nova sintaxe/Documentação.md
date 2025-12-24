@@ -293,7 +293,7 @@ modal "Configurações" id=modal_config
         botao "Cancelar" ação: fechar_modal
 ```
 
-Tabelas e Listas
+# Tabelas e Listas
 
 ```chor
 # Tabela simples
@@ -320,7 +320,7 @@ grade colunas=3
             texto "R$ {produto.preco}"
 ```
 
-Mídia
+# Mídia
 
 ```chor
 imagem "logo.png" largura=200 altura=100
@@ -329,7 +329,7 @@ audio "musica.mp3" autoplay
 galeria imagens=["foto1.jpg", "foto2.jpg", "foto3.jpg"]
 ```
 
-Layout Responsivo
+# Layout Responsivo
 
 ```chor
 tela "Responsiva"
@@ -354,7 +354,7 @@ tela "Responsiva"
             secao "Widgets"
 ```
 
-Temas e Estilização
+# Temas e Estilização
 
 ```chor
 tema "MeuTema"
@@ -384,7 +384,7 @@ usar_tema "MeuTema"
 
 ---
 
-6. LÓGICA & FUNÇÕES
+##  6. LÓGICA & FUNÇÕES
 
 Declaração de Funções
 
@@ -405,7 +405,7 @@ função obter_nome(): texto
 fim
 ```
 
-Estruturas de Controle
+# Estruturas de Controle
 
 Condicionais
 
@@ -432,7 +432,7 @@ escolha opcao
         mensagem "Opção inválida"
 ```
 
-Loops
+# Loops
 
 ```chor
 # Loop for tradicional
@@ -453,7 +453,7 @@ fazer
 enquanto entrada ≠ "sair"
 ```
 
-Operadores
+# Operadores
 
 ```chor
 # Aritméticos
@@ -483,7 +483,7 @@ contem = "texto" contem "ex"
 tamanho = tamanho("texto")
 ```
 
-Manipulação de Dados
+# Manipulação de Dados
 
 ```chor
 # Listas
@@ -508,7 +508,7 @@ partes = texto.dividir(" ")
 substring = texto.fatiar(0, 3)
 ```
 
-Tratamento de Erros
+# Tratamento de Erros
 
 ```chor
 tentar
@@ -523,9 +523,9 @@ finalmente
 
 ---
 
-7. EVENTOS & REATIVIDADE
+# 7. EVENTOS & REATIVIDADE
 
-Eventos Nativos
+# Eventos Nativos
 
 ```chor
 # Eventos de UI
@@ -554,7 +554,7 @@ quando evento "dados_salvos"
     mensagem "Dados salvos com sucesso!"
 ```
 
-Data Binding (Ligação de Dados)
+# Data Binding (Ligação de Dados)
 
 ```chor
 # One-way (UI → Dados)
@@ -571,13 +571,13 @@ dados
     nome: texto = "João"
     sobrenome: texto = "Silva"
     nome_completo: computado
-        retornar nome & " " & sobrenome
+        retornar nome & " " & # sobrenome
 
 # Usando
 texto "Nome: {nome_completo}"  # Atualiza automaticamente
 ```
 
-Reatividade Automática
+# Reatividade Automática
 
 ```chor
 dados
@@ -592,9 +592,9 @@ quando contador mudar
 
 ---
 
-8. COMPONENTES & REUTILIZAÇÃO
+## 8. COMPONENTES & REUTILIZAÇÃO
 
-Criando Componentes
+# Criando Componentes
 
 ```chor
 componente BotaoPersonalizado
@@ -625,7 +625,7 @@ componente BotaoPersonalizado
 fim
 ```
 
-Usando Componentes
+# Usando Componentes
 
 ```chor
 # Com parâmetros posicionais
@@ -642,7 +642,7 @@ usar BotaoPersonalizado(
 usar BotaoPersonalizado("Enviar") ao_clicar: enviar_dados
 ```
 
-Slots e Conteúdo Dinâmico
+# Slots e Conteúdo Dinâmico
 
 ```chor
 componente Card
@@ -667,9 +667,9 @@ usar Card(titulo: "Produto")
 
 ---
 
-9. MULTI-TARGET (TRANSPILAÇÃO)
+## 9. MULTI-TARGET (TRANSPILAÇÃO)
 
-Configurando Multi-Target
+# Configurando Multi-Target
 
 ```chor
 config
@@ -678,7 +678,7 @@ config
     # Configurações específicas por target
     target_html
         framework: "react"  # ou "vue", "angular", "vanilla"
-        estilo: "tailwind"  # ou "bootstrap", "custom"
+        estilo: "tailwind"  # ou "bootstrap", "customizar"
     
     target_python
         tipo: "console"     # ou "gui_tkinter", "web_flask"
@@ -689,7 +689,7 @@ config
 fim
 ```
 
-Diretivas de Transpilação
+# Diretivas de Transpilação
 
 ```chor
 # Incluir apenas em certos targets
@@ -712,7 +712,7 @@ senão se target = "python"
     usar BibliotecaPython()
 ```
 
-APIs Específicas por Plataforma
+# APIs Específicas por Plataforma
 
 ```chor
 # Sistema de arquivos (diferente por target)
@@ -734,9 +734,9 @@ APIs Específicas por Plataforma
 
 ---
 
-10. TUTORIAL PRÁTICO COMPLETO
+## 10. TUTORIAL PRÁTICO COMPLETO
 
-PROJETO 1: Calculadora Universal
+# PROJETO 1: Calculadora Universal
 
 ```chor
 app "CalculadoraUniversal"
@@ -819,7 +819,7 @@ app "CalculadoraUniversal"
 fim
 ```
 
-PROJETO 2: Gerenciador de Tarefas
+# PROJETO 2: Gerenciador de Tarefas
 
 ```chor
 app "TaskManager"
@@ -915,7 +915,7 @@ fim
 
 ---
 
-11. REFERÊNCIA DA API
+## 11. REFERÊNCIA DA API
 
 Funções Globais
 
@@ -959,7 +959,7 @@ dormir(milisegundos)    # Pausa execução
 executar(comando) -> texto  # Executa comando shell
 ```
 
-APIs de Plataforma
+# APIs de Plataforma
 
 ```chor
 # Browser (HTML target)
