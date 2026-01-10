@@ -1,6 +1,6 @@
 # Chorty V 4.0- uma nova sintaxe
 
-## testes: https://adilson889.github.io/Chorty-Studio/
+## testes V1.0: https://adilson889.github.io/Chorty-Studio/
 
 ------------------------------------
 ## Índice
