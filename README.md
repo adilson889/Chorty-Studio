@@ -3,7 +3,7 @@
 ## testes V1.0: https://adilson889.github.io/Chorty-Studio/
 
 ## Nova Versão:
-HTTPS://chorty7-2.netlify.app
+https://chorty7-2.netlify.app/
 
 ------------------------------------
 ## Índice
