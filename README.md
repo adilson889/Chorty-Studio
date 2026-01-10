@@ -2,6 +2,9 @@
 
 ## testes V1.0: https://adilson889.github.io/Chorty-Studio/
 
+## Nova Versão:
+chorty7-2.netlify.app
+
 ------------------------------------
 ## Índice
 
