@@ -8,7 +8,7 @@ Com uma sintaxe simples, diversos exemplos e uma comunidade ativa, o Chorty perm
 ## Porquê Chorty?
 
 - **Lógica em português:** Aprende os conceitos fundamentais da programação sem a barreira do idioma.
-- **Entendimento profundo:** Ao veres o teu código a ser transpilado para Python, Java, C ou C++, percebes como as estruturas se traduzem entre linguagens.
+- **Entendimento profundo:** Ao veres o teu código a ser traduzido para Python, Java, C ou C++, percebes como as estruturas se traduzem entre linguagens.
 - **4+ alvos de saída:** Escreve uma vez e vê o teu código a rodar em Python, C, Java, C++ e mais.
 - **Foco no ensino:** Ideal para iniciantes, escolas e qualquer pessoa que queira dar os primeiros passos com confiança.
 
