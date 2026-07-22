@@ -1,7 +1,13 @@
-# Chorty — A tua base para aprender a programar.
+<p align="center">
+  <img src="files/ic_app.png" alt="Chorty" width="120"/>
+</p>
 
-**Chorty é um ambiente para aprender a programar, voltado para iniciantes que falam português.
-Com uma sintaxe simples, diversos exemplos e uma comunidade ativa, o Chorty permite que escrevas lógica no teu idioma e vejas o teu código ganhar vida em 4+ linguagens diferentes — incluindo Python, Java, C e C++.**
+<h1 align="center">Chorty — A tua base para aprender a programar.</h1>
+
+<p align="center">
+  <b>Chorty é um ambiente para aprender a programar, voltado para iniciantes que falam português.</b><br/>
+  Com uma sintaxe simples, diversos exemplos e uma comunidade ativa, o Chorty permite que escrevas lógica no teu idioma e vejas o teu código ganhar vida em 4+ linguagens diferentes — incluindo Python, Java, C e C++.
+</p>
 
 ---
 
@@ -25,13 +31,24 @@ Aprendes lógica, estruturas de dados e algoritmos no teu idioma, e ao mesmo tem
 
 ---
 
+## Documentação
+
+| Documento | Para quem |
+|---|---|
+| [Guia para Iniciantes](docs/chorty_iniciantes.md) | Nunca programaste? Começa por aqui — passo a passo, sem jargão. |
+| [Documentação do Modo Script](docs/documentacao_script.md) | Referência técnica completa: sintaxe, todos os alvos de saída, compatibilidade entre linguagens. |
+
+---
+
 ## Este repositório
 
 Aqui encontras:
 
 - **Documentação oficial** (guias e materiais para iniciantes)
 - **Exemplos e exercícios** para praticares
-- **Recursos da comunidade**
+- **O código-fonte do ambiente Chorty**
+
+> Procuras bibliotecas e extensões para importar no teu código? Vê o repositório [comunidade-chorty](https://github.com/adilson889/comunidade-chorty).
 
 ---
 
@@ -40,4 +57,6 @@ Aqui encontras:
 O Chorty é feito por e para falantes de português.
 Dá uma ⭐ no repositório, explora os exemplos e começa a tua jornada.
 
-> **Aprende lógica em português. Conquista qualquer linguagem. Chorty é a tua base.**
+<p align="center">
+  <b>Aprende lógica em português. Conquista qualquer linguagem. Chorty é a tua base.</b>
+</p>
