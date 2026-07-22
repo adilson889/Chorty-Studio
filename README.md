@@ -48,7 +48,7 @@ Aqui encontras:
 - **Exemplos e exercícios** para praticares
 - **O código-fonte do ambiente Chorty**
 
-> Procuras bibliotecas e extensões para importar no teu código? Vê o repositório [comunidade-chorty](https://github.com/adilson889/comunidade-chorty).
+## Procuras bibliotecas e extensões para importar no teu código? Vê o repositório [comunidade-chorty](https://github.com/adilson889/comunidade-chorty).
 
 ---
 
