@@ -49,6 +49,9 @@ Aqui encontras:
 - **O código-fonte do ambiente Chorty**
 
 ## Procuras bibliotecas e extensões para importar no teu código? Vê o repositório [comunidade-chorty](https://github.com/adilson889/comunidade-chorty).
+---
+## Baixar o aplicativo  para Android [download v1.0](https://github.com/adilson889/Chorty-Studio/releases/download/v1.0/signed.apk).
+
 
 ---
 
