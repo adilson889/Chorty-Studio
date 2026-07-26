@@ -1,6 +1,7 @@
 
 > Um guia passo a passo para quem está a aprender a programar pela primeira vez.
 > Não é preciso saber nada de programação antes de começar.
+> **Versão 1.2**
 
 ---
 
@@ -211,10 +212,10 @@ idade = 20
 
 se idade >= 18
 imprimir("És maior de idade")
-fim
+>>>
 ```
 
-Isto lê-se: "se a idade for maior ou igual a 18, mostra a mensagem". A linha `fim` marca onde termina o bloco `se`.
+Isto lê-se: "se a idade for maior ou igual a 18, mostra a mensagem". A linha `>>>` marca onde termina o bloco `se`.
 
 ### Com alternativa (senao)
 
@@ -225,7 +226,7 @@ se idade >= 18
 imprimir("És maior de idade")
 senao
 imprimir("Ainda és menor de idade")
-fim
+>>>
 ```
 
 ### Com várias condições (senao se)
@@ -239,7 +240,7 @@ senao se nota >= 5
 imprimir("Recuperação")
 senao
 imprimir("Reprovado")
-fim
+>>>
 ```
 
 O Chorty testa as condições **de cima para baixo** e para na primeira que for verdadeira.
@@ -253,7 +254,7 @@ O Chorty testa as condições **de cima para baixo** e para na primeira que for 
 ```chorty
 para i=1 ate 5
 imprimir(i)
-fim
+>>>
 ```
 
 Isto mostra os números de 1 a 5, um por linha. `i` é uma variável criada automaticamente pelo `para`, que muda a cada repetição — chama-se **contador**.
@@ -265,7 +266,7 @@ notas = [8, 6, 9]
 
 para cada nota em notas
 imprimir(nota)
-fim
+>>>
 ```
 
 Isto passa por cada valor da lista `notas`, um de cada vez, chamando-o `nota` dentro do bloco.
@@ -278,7 +279,7 @@ contador = 0
 enquanto contador < 3
 imprimir(contador)
 contador = contador + 1
-fim
+>>>
 ```
 
 O bloco `enquanto` repete enquanto a condição continuar verdadeira. **Cuidado:** se te esqueceres de mudar a condição lá dentro (como o `contador = contador + 1` acima), o programa repete para sempre — chama-se um ciclo infinito.
@@ -292,7 +293,7 @@ Uma função é um **bloco de instruções com nome**, que podes chamar sempre q
 ```chorty
 funcao saudar()
 imprimir("Olá!")
-fim
+>>>
 
 saudar()     # chama a função — mostra: Olá!
 saudar()     # chama outra vez — mostra: Olá! de novo
@@ -305,7 +306,7 @@ Um parâmetro é uma informação que entregas à função quando a chamas, para
 ```chorty
 funcao saudar(nome)
 imprimir("Olá, " + nome + "!")
-fim
+>>>
 
 saudar("Ana")       # mostra: Olá, Ana!
 saudar("Carlos")    # mostra: Olá, Carlos!
@@ -320,7 +321,7 @@ Em vez de mostrar algo diretamente, uma função pode **calcular e devolver** um
 ```chorty
 funcao dobro(x)
 retornar x * 2
-fim
+>>>
 
 resultado = dobro(5)
 imprimir(resultado)     # mostra: 10
@@ -372,12 +373,12 @@ idade = 0
 funcao novo(nome, idade)
 este.nome = nome
 este.idade = idade
-fim
+>>>
 
 funcao apresentar()
 imprimir("Olá, eu sou " + este.nome + " e tenho " + texto(este.idade) + " anos")
-fim
-fim
+>>>
+>>>
 ```
 
 Repara em três coisas novas:
@@ -411,7 +412,7 @@ carlos.apresentar()     # mostra: Olá, eu sou Carlos e tenho 30 anos
 | Confundir `=` com `==` | `se idade = 18` | `se idade == 18` |
 | Esquecer aspas em texto | `nome = Ana` | `nome = "Ana"` |
 | Esquecer `texto()` ao juntar número | `"Idade: " + idade` | `"Idade: " + texto(idade)` |
-| Esquecer o `fim` de um bloco | `se x > 0 \n imprimir(x)` | adicionar `fim` no final |
+| Esquecer o `>>>` de um bloco | `se x > 0 \n imprimir(x)` | adicionar `>>>` no final |
 | Índice de lista a começar em 1 | `notas[1]` para o primeiro elemento | `notas[0]` é o primeiro |
 | Trocar o tipo de uma variável a meio | `x = "sim"` depois `x = 5` | manter sempre o mesmo tipo |
 | Ciclo `enquanto` sem atualizar a condição | esquecer `contador = contador + 1` | garantir que a condição muda a cada volta |
@@ -450,7 +451,7 @@ se nota >= 7
 imprimir("Aprovado")
 senao
 imprimir("Reprovado")
-fim
+>>>
 ```
 </details>
 
@@ -464,7 +465,7 @@ Mostra a tabuada do 5, de 1 a 10 (`5 x 1 = 5`, `5 x 2 = 10`, ...).
 ```chorty
 para i=1 ate 10
 imprimir("5 x " + texto(i) + " = " + texto(5 * i))
-fim
+>>>
 ```
 </details>
 
@@ -481,7 +482,7 @@ soma = 0
 
 para cada nota em notas
 soma = soma + nota
-fim
+>>>
 
 imprimir("A soma é " + texto(soma))
 ```
@@ -499,9 +500,9 @@ funcao ehPar(numero)
 resto = numero - (numero / 2) * 2
 se resto == 0
 retornar verdadeiro
-fim
+>>>
 retornar falso
-fim
+>>>
 
 imprimir(ehPar(4))
 imprimir(ehPar(7))
@@ -521,8 +522,8 @@ se nota >= 7
 retornar nome + " foi aprovado com " + texto(nota)
 senao
 retornar nome + " foi reprovado com " + texto(nota)
-fim
-fim
+>>>
+>>>
 
 imprimir(classificar("Ana", 8))
 imprimir(classificar("Carlos", 4))
@@ -545,16 +546,16 @@ preco = 0
 funcao novo(nome, preco)
 este.nome = nome
 este.preco = preco
-fim
+>>>
 
 funcao aplicarDesconto(percentagem)
 este.preco = este.preco - (este.preco * percentagem / 100)
-fim
+>>>
 
 funcao mostrar()
 imprimir(este.nome + " custa " + texto(este.preco))
-fim
-fim
+>>>
+>>>
 
 sapatos = novo Produto("Sapatos", 5000)
 camisa = novo Produto("Camisa", 2000)
