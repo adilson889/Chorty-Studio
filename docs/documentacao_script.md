@@ -1,5 +1,6 @@
 > Documento oficial da gramática, sintaxe e comportamento do **modo script** do Chorty.
 > Cobre os alvos: `python`, `java`, `cpp`, `c`.
+> **Versão 1.2**
 
 ---
 
@@ -30,15 +31,19 @@
 
 ### Modo Script Automático
 
-Um ficheiro que **não começa com `app`** é tratado automaticamente como script — não precisa de `config` nem de `fim` a envolver tudo:
+Um ficheiro que **não começa com `app`** é tratado automaticamente como script — não precisa de `config` nem de `>>>` a envolver tudo:
 
 ```chorty
 funcao dobro(x)
 retornar x * 2
-fim
+>>>
 
 imprimir(dobro(5))
 ```
+
+`>>>` fecha qualquer bloco (`funcao`, `se`, `enquanto`, etc.).
+
+> Exceção: dentro de um bloco `<<< ... >>>` (texto bruto, ver secção 15.11), o `>>>` fecha sempre o texto.
 
 ### Modo Script com `app`
 
@@ -49,11 +54,11 @@ app "teste"
 
 config
 saida = "python"
-fim
+>>>
 
 funcao dobro(x)
 retornar x * 2
-fim
+>>>
 
 imprimir(dobro(5))
 ```
@@ -67,7 +72,7 @@ Ambas as formas produzem o mesmo resultado — a segunda apenas torna o alvo exp
 ```chorty
 config
 saida = "c"
-fim
+>>>
 ```
 
 | Atributo | Valores | Descrição |
@@ -142,12 +147,12 @@ No modo script, o tipo de uma variável ou parâmetro pode ser **inferido automa
 # tipo inferido
 funcao somar(a, b)
 retornar a + b
-fim
+>>>
 
 # tipo explícito
 funcao somar(a: numero, b: numero)
 retornar a + b
-fim
+>>>
 ```
 
 **Quando declarar o tipo explicitamente:**
@@ -187,9 +192,9 @@ funcao somarTodos(numeros: lista)
 total = 0
 para cada n em numeros
 total = total + n
-fim
+>>>
 retornar total
-fim
+>>>
 ```
 
 ---
@@ -202,22 +207,22 @@ fim
 # sem parâmetros
 funcao iniciar
 imprimir("Pronto!")
-fim
+>>>
 
 # com parâmetros, tipo inferido
 funcao somar(a, b, c)
 retornar a + b + c
-fim
+>>>
 
 # com tipo explícito
 funcao somar(a: numero, b: numero, c: numero)
 retornar a + b + c
-fim
+>>>
 
 # com tipo de retorno explícito
 funcao somar(a: numero, b: numero) retorna numero
 retornar a + b
-fim
+>>>
 ```
 
 ### Chamada
@@ -255,9 +260,9 @@ Funções recursivas funcionam normalmente em todos os alvos:
 funcao fatorial(n)
 se n <= 1
 retornar 1
-fim
+>>>
 retornar n * fatorial(n - 1)
-fim
+>>>
 ```
 
 ---
@@ -273,15 +278,15 @@ propriedade2 = valorPadrao
 
 funcao novo(parametros...)
 este.propriedade1 = parametros
-fim
+>>>
 
 funcao metodo(parametros...)
 # corpo do metodo, com acesso a este.propriedade
-fim
-fim
+>>>
+>>>
 ```
 
-- **`classe Nome ... fim`** — declara a classe
+- **`classe Nome ... >>>`** — declara a classe
 - **`herda Pai`** (opcional) — a classe herda propriedades e métodos de `Pai`
 - **Propriedades** — declaradas soltas no corpo da classe, com valor padrão (`nome = ""`, `idade = 0`); tornam-se atributos de instância
 - **`funcao novo(...)`** — construtor; corre sempre que um objeto é criado com `novo`. Não é obrigatório declarar — se ausente, um construtor vazio é gerado automaticamente, preenchendo só as propriedades com o valor padrão
@@ -306,12 +311,12 @@ idade = 0
 funcao novo(nome, idade)
 este.nome = nome
 este.idade = idade
-fim
+>>>
 
 funcao apresentar()
 imprimir("Eu sou " + este.nome + " e tenho " + texto(este.idade) + " anos")
-fim
-fim
+>>>
+>>>
 
 classe Cachorro herda Animal
 raca = ""
@@ -320,12 +325,12 @@ funcao novo(nome, idade, raca)
 este.nome = nome
 este.idade = idade
 este.raca = raca
-fim
+>>>
 
 funcao latir()
 imprimir(este.nome + " diz au au")
-fim
-fim
+>>>
+>>>
 
 rex = novo Cachorro("Rex", 3, "Labrador")
 rex.apresentar()     # herdado de Animal
@@ -336,9 +341,9 @@ rex.latir()          # próprio de Cachorro
 
 | Situação | Sintaxe |
 |---|---|
-| Classe simples | `classe Nome ... fim` |
-| Classe com herança | `classe Nome herda Pai ... fim` |
-| Construtor | `funcao novo(a, b) ... fim` |
+| Classe simples | `classe Nome ... >>>` |
+| Classe com herança | `classe Nome herda Pai ... >>>` |
+| Construtor | `funcao novo(a, b) ... >>>` |
 | Referência ao próprio objeto | `este` |
 | Acesso a propriedade | `este.propriedade` (dentro da classe) / `objeto.propriedade` (fora) |
 | Criar instância | `objeto = novo Nome(args)` |
@@ -375,19 +380,19 @@ senao se nota >= 5
 imprimir("Recuperação")
 senao
 imprimir("Reprovado")
-fim
+>>>
 ```
 
 **Ciclo numérico:**
 ```chorty
 para i=1 ate 5
 imprimir(i)
-fim
+>>>
 
 # com passo
 para i=0 ate 10 passo 2
 imprimir(i)
-fim
+>>>
 ```
 
 **Ciclo sobre lista:**
@@ -395,7 +400,7 @@ fim
 numeros = [10, 20, 30]
 para cada item em numeros
 imprimir(item)
-fim
+>>>
 ```
 
 **Enquanto:**
@@ -404,7 +409,7 @@ contador = 0
 enquanto contador < 3
 contador = contador + 1
 imprimir(contador)
-fim
+>>>
 ```
 
 **Retornar / Interromper / Continuar:**
@@ -413,10 +418,10 @@ funcao procurar(lista, alvo)
 para cada item em lista
 se item == alvo
 retornar verdadeiro
-fim
-fim
+>>>
+>>>
 retornar falso
-fim
+>>>
 ```
 
 ---
@@ -571,9 +576,9 @@ O código continua a ser gerado e a compilar — o comentário serve apenas para
 funcao fatorial(n)
 se n <= 1
 retornar 1
-fim
+>>>
 retornar n * fatorial(n - 1)
-fim
+>>>
 
 imprimir("Fatorial de 5: " + texto(fatorial(5)))
 imprimir("Fatorial de 10: " + texto(fatorial(10)))
@@ -584,7 +589,7 @@ imprimir("Fatorial de 10: " + texto(fatorial(10)))
 ```chorty
 funcao saudacao(nome, idade)
 retornar "Olá " + nome + ", você tem " + texto(idade) + " anos"
-fim
+>>>
 
 imprimir(saudacao("Ana", 25))
 ```
@@ -599,11 +604,11 @@ para i=0 ate 2
 total = total + notas[i]
 se notas[i] < 5
 aprovado = "não"
-fim
-fim
+>>>
+>>>
 media = total / 3
 retornar nome + " — média: " + texto(media) + " — aprovado: " + aprovado
-fim
+>>>
 
 notasAna = [8, 6, 9]
 notasBia = [3, 4, 2]
@@ -618,13 +623,13 @@ imprimir(gerarRelatorio("Bia", notasBia))
 funcao fibonacci(n)
 se n <= 1
 retornar n
-fim
+>>>
 retornar fibonacci(n - 1) + fibonacci(n - 2)
-fim
+>>>
 
 para i=0 ate 5
 imprimir("fib(" + texto(i) + ") = " + texto(fibonacci(i)))
-fim
+>>>
 ```
 
 ---
@@ -694,7 +699,7 @@ O nome depois do `usar biblioteca` é o **alias** — pode ser qualquer nome (`d
 resultado = da.buscar(url)
 para cada item em resultado
 imprimir(item.nome)
-fim
+>>>
 ```
 
 Troca `item.nome` pelo nome do campo que existe na tua resposta.
@@ -728,8 +733,8 @@ resultado = da.buscar(url)
 imprimir(resultado)
 pegar erro
 imprimir("Falhou: " + erro)
-fim
-fim
+>>>
+>>>
 
 buscar_dados("https://raw.githubusercontent.com/adilson889/comunidade-chorty/main/catalogo_libs.json")
 ```
@@ -764,11 +769,11 @@ da.cabecalho("Accept", "application/json")
 resultado = da.buscar(url)
 para cada item em resultado
 imprimir(item.nome)
-fim
+>>>
 pegar erro
 imprimir("Falhou: " + erro)
-fim
-fim
+>>>
+>>>
 
 buscar_catalogo("https://raw.githubusercontent.com/adilson889/comunidade-chorty/main/catalogo_libs.json")
 ```
@@ -824,7 +829,7 @@ funcao estatisticas(lista)
 imprimir("Media: " + num.media(lista))
 imprimir("Desvio: " + num.arredondar(num.desvio(lista), 2))
 imprimir("Min: " + num.minimo(lista) + " Max: " + num.maximo(lista))
-fim
+>>>
 
 dados = num.sequencia(1, 11)
 estatisticas(dados)
@@ -865,14 +870,14 @@ usar biblioteca texto.json json
 
 funcao salvar_config(dados)
 arq.escrever("config.json", json.paraTexto(dados))
-fim
+>>>
 
 funcao carregar_config()
 se arq.existe("config.json") entao
 devolver json.paraObjeto(arq.ler("config.json"))
-fim
+>>>
 devolver {}
-fim
+>>>
 ```
 
 ---
@@ -912,7 +917,7 @@ obj = json.paraObjeto(texto)
 imprimir(obj.nome)
 senao
 imprimir("JSON invalido")
-fim
+>>>
 
 imprimir(json.paraTexto(obj))
 ```
@@ -952,7 +957,7 @@ email = "contato@chorty.dev"
 
 se re.validar(email, "[^@]+@[^@]+\\.[^@]+") entao
 imprimir("Email valido")
-fim
+>>>
 
 telefone = "Ligue: 912345678 ou 934567890"
 numeros = re.encontrar(telefone, "\\d{9}")
@@ -997,7 +1002,7 @@ texto = "nome,idade\nAna,30\nBruno,25"
 pessoas = csv.ler(texto)
 para cada p em pessoas
 imprimir(p.nome + " tem " + p.idade + " anos")
-fim
+>>>
 
 saida = csv.escrever(pessoas)
 imprimir(saida)
@@ -1081,7 +1086,7 @@ esperar(500)
 mensagem = ws.receber()
 se mensagem != nulo entao
 imprimir("Recebido: " + mensagem)
-fim
+>>>
 
 ws.fechar()
 ```
@@ -1116,5 +1121,112 @@ usar biblioteca sistema.processos sis
 resultado = sis.executar("ls -la")
 imprimir(resultado)
 ```
+
+---
+
+### 15.10 servidor
+
+Biblioteca nativa do Chorty para declarar rotas HTTP e correr um servidor web a partir do teu código.
+
+#### Importar
+
+```
+usar biblioteca servidor srv
+```
+
+#### Métodos
+
+| Método | Parâmetros | Devolve |
+|---|---|---|
+| `rota(caminho, metodo, funcao)` | caminho (`"/"`), método (`"GET"`, `"POST"`...), função a chamar | o próprio `srv` (encadeável) |
+| `executar(porta)` | porta (número, por omissão `8080`) | o próprio `srv` |
+
+`rota(...)` regista um caminho — quando alguém acede a esse caminho, a `funcao` indicada é chamada e o valor que ela devolver (com `retornar`) é o que aparece no navegador.
+
+`executar(porta)` liga o servidor. Depois de chamado, o site fica acessível em `http://localhost:<porta>` (ou pelo IP do telemóvel na mesma rede Wi-Fi).
+
+#### Exemplo
+
+```
+usar biblioteca servidor srv
+
+funcao inicio()
+retornar "Bem-vindo ao meu site!"
+>>>
+
+funcao ola()
+retornar "Olá, mundo!"
+>>>
+
+srv.rota("/", "GET", inicio)
+srv.rota("/ola", "GET", ola)
+
+srv.executar(8080)
+```
+
+#### Estado atual
+
+- `srv.rota(...)`: já funciona — regista as rotas normalmente.
+- `srv.executar(...)`: no alvo `console`, ainda **simula** a execução (mostra as rotas registadas nos logs, mas não abre nenhuma porta real). Em `python`, `java`, `cpp` e `c`, esta biblioteca ainda não está implementada.
+
+Esta biblioteca está em desenvolvimento ativo — o comportamento pode mudar em versões futuras.
+
+---
+
+### 15.11 Bloco de texto bruto `<<< >>>`
+
+Escreve HTML, CSS ou qualquer texto multi-linha sem escapar nada — sem comentário em `#`, sem chaveta a quebrar o parser, sem aspas simples/duplas a fechar cedo.
+
+```chorty
+html = <<<
+<div style='padding:20px'>
+<h1 style='color:#0f172a'>Ola, Chorty!</h1>
+</div>
+>>>
+```
+
+- Tudo entre `<<<` e `>>>` é copiado literalmente, incluindo quebras de linha.
+- `#`, `{`, `}`, `'`, `"` dentro do bloco não têm significado especial.
+- O resultado é uma `texto` normal — usa `retornar`, concatena, passa como argumento.
+
+---
+
+### 15.12 mostrar_html
+
+Mostra HTML diretamente no ecrã, sem precisar de `servidor`/`srv` nem de `config`. Funciona em qualquer script — o Chorty deteta a chamada e monta a tela sozinho.
+
+```chorty
+funcao pagina_inicial()
+html = <<<
+<div style='font-family:sans-serif;text-align:center;padding:60px'>
+<h1>Bem-vindo ao Chorty!</h1>
+</div>
+>>>
+mostrar_html(html)
+>>>
+
+pagina_inicial()
+```
+
+- `renderizar(html)` e `mostrar_tela(html)` são aliases — fazem o mesmo.
+- Podes chamar de novo dentro de outra função para trocar o que está no ecrã (ex.: resposta a um clique).
+- `onclick`, `<script>` e `<style>` dentro do HTML funcionam normalmente, como em qualquer página web.
+
+```chorty
+funcao entrar()
+mostrar_html("<h1 style='text-align:center;padding:60px'>Login feito!</h1>")
+>>>
+
+funcao pagina_login()
+html = <<<
+<button onclick='entrar()'>Entrar</button>
+>>>
+mostrar_html(html)
+>>>
+
+pagina_login()
+```
+
+Funções chamadas por `onclick` (mesmo que usem `mostrar_html` de novo) mantêm o acesso a todas as funções Chorty do programa — o runtime é reconstruído a cada troca de tela.
 
 ---
