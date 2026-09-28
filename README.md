@@ -55,7 +55,7 @@ Aqui encontras:
 
 ---
 
-## Junta-te à comunidade
+## Junta-te à comunidade:
 
 O Chorty é feito por e para falantes de português.
 Dá uma ⭐ no repositório, explora os exemplos e começa a tua jornada.
